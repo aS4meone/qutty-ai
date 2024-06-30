@@ -21,7 +21,7 @@ export default function Results() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch('http://127.0.0.1:8000/', {
+            const response = await fetch('http://195.49.210.50:8872/', {
                 headers: {'Accept': 'application/json'}
             });
             const result: DataItem[] = await response.json();

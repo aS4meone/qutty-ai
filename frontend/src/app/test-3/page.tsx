@@ -140,7 +140,7 @@ const FourthTest: React.FC = () => {
             formData.append('images', blob, `image${index}.png`);
         });
 
-        const response = await fetch('http://127.0.0.1:8000/classify-strict-db', {
+        const response = await fetch('http://195.49.210.50:8872/classify-strict-db', {
             method: 'POST',
             body: formData,
         });
