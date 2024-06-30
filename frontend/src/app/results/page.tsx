@@ -21,7 +21,7 @@ export default function Results() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch('http://195.49.210.50:8872/', {
+            const response = await fetch('https://ai-api.qutty.net//', {
                 headers: {'Accept': 'application/json'}
             });
             const result: DataItem[] = await response.json();

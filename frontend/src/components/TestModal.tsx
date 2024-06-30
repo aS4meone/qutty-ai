@@ -39,7 +39,7 @@ const TestModal: FC<TestModalProps> = ({onClose}) => {
         formData.append("diagnosis", diagnosis);
 
         try {
-            const response = await fetch("http://195.49.210.50:8872/diagnosis", {
+            const response = await fetch("https://ai-api.qutty.net//diagnosis", {
                 method: "POST",
                 body: formData,
             });
