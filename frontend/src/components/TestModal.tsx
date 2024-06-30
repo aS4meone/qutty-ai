@@ -39,7 +39,7 @@ const TestModal: FC<TestModalProps> = ({onClose}) => {
         formData.append("diagnosis", diagnosis);
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/diagnosis", {
+            const response = await fetch("http://195.49.210.50:8872/diagnosis", {
                 method: "POST",
                 body: formData,
             });

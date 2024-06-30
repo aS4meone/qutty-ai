@@ -3,7 +3,7 @@ services:
   nextjs:
     build: .
     ports:
-      - "3000:3000"
+      - "3567:3567"
     volumes:
       - .:/app
       - /app/node_modules
