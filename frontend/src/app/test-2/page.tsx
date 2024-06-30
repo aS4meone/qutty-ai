@@ -91,7 +91,7 @@ const SecondTest: React.FC = () => {
             formData.append('images', blob, `image${index}.png`);
         });
 
-        const response = await fetch('https://ai-api.qutty.net//classify-not-strict-db', {
+        const response = await fetch('https://ai-api.qutty.net/classify-not-strict-db', {
             method: 'POST',
             body: formData,
         });
