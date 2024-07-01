@@ -121,8 +121,7 @@ const SecondTest: React.FC = () => {
                 Start
             </button>
             {currentGestureIndex !== null && currentGestures.length > 0 && (
-                <div style={{fontSize: '2rem', margin: '1rem'}}>
-                    <h2>Жест {currentGestureIndex + 1}</h2>
+                <div className="text-4xl font-bold mt-6 text-gray-800">
                     <Image
                         src={`/gestures/${GESTURE_IMAGES[currentGestures[currentGestureIndex]]}`}
                         alt={currentGestures[currentGestureIndex]}
@@ -130,6 +129,7 @@ const SecondTest: React.FC = () => {
                         height={150}
                         className="mx-auto"
                     />
+                    <h2>Жест {currentGestureIndex + 1}</h2>
                 </div>
             )}
             {promptText && (
