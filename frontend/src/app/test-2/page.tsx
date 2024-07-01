@@ -19,6 +19,7 @@ const SecondTest: React.FC = () => {
     const [showDescription, setShowDescription] = useState(true);
     const [showWebcam, setShowWebcam] = useState(true);
     const [promptText, setPromptText] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const startCapture = async () => {
         setCapturing(true);
@@ -44,7 +45,7 @@ const SecondTest: React.FC = () => {
 
         const captureGesture = async (index: number, gestureNumber: number) => {
             setPromptText(`Покажите жест который был под номером ${gestureNumber}`);
-            if (gestureNumber ==  3){
+            if (gestureNumber == 3) {
                 setPromptText(`А теперь покажите жест который был под номером ${gestureNumber}`)
             }
             setCountdown(5);
@@ -73,6 +74,7 @@ const SecondTest: React.FC = () => {
     };
 
     const sendToBackend = async (gestures: string[], images: string[]) => {
+        setLoading(true); // Включаем лоадер
         const formData = new FormData();
         const storedName = localStorage.getItem("name") || "";
         formData.append('name', storedName);
@@ -98,6 +100,7 @@ const SecondTest: React.FC = () => {
 
         const result = await response.json();
         setResults(result);
+        setLoading(false);
     };
 
     return (
@@ -137,6 +140,11 @@ const SecondTest: React.FC = () => {
             {countdown !== null && (
                 <div className="text-2xl mt-6 text-gray-800">
                     Отсчет: {countdown}
+                </div>
+            )}
+            {loading && (
+                <div className="text-4xl mt-6 text-gray-800">
+                    <p>Loading...</p>
                 </div>
             )}
             {results && (

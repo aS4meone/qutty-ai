@@ -1,34 +1,13 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import Webcam from 'react-webcam';
 import Link from "next/link";
 import Image from 'next/image';
+import {GESTURE_IMAGES, SHAPE_IMAGES} from "@/lib/gestures";
 
 const GESTURES = ['dislike', 'like', 'rock', 'ok', 'peace', 'one', 'fist', 'palm'];
 
 const SHAPES = ['black_circle', 'black_square', 'black_star', 'black_triangle', 'white_circle', 'white_square', 'white_star', "white_triangle"];
-
-const GESTURE_IMAGES: { [key: string]: string } = {
-    dislike: 'dislike.png',
-    like: 'like.png',
-    rock: 'rock.png',
-    ok: 'ok.png',
-    peace: 'peace.png',
-    one: 'one.png',
-    fist: 'fist.png',
-    palm: 'palm.png',
-};
-
-const SHAPE_IMAGES: { [key: string]: string } = {
-    black_circle: 'black_circle.png',
-    black_square: 'black_square.png',
-    black_star: 'black_star.png',
-    black_triangle: 'black_triangle.png',
-    white_circle: 'white_circle.png',
-    white_square: 'white_square.png',
-    white_star: 'white_star.png',
-    white_triangle: 'white_triangle.png',
-};
 
 const getRandomShape = () => {
     return SHAPES[Math.floor(Math.random() * SHAPES.length)];
@@ -55,7 +34,7 @@ const generateShapeSequence = (selectedShape: string) => {
     return combinedShapes;
 };
 
-const FourthTest: React.FC = () => {
+const ThirdTest: React.FC = () => {
     const webcamRef = useRef<Webcam>(null);
     const [capturing, setCapturing] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
@@ -63,14 +42,15 @@ const FourthTest: React.FC = () => {
     const [results, setResults] = useState<{ correct_count: number; results: string[] } | null>(null);
     const [shapeGesture, setShapeGesture] = useState<{ shape: string, gesture: string } | null>(null);
     const [showDescription, setShowDescription] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const startCapture = () => {
         const selectedShape = getRandomShape();
         const selectedGesture = getRandomGesture();
-        setShapeGesture({ shape: selectedShape, gesture: selectedGesture });
+        setShapeGesture({shape: selectedShape, gesture: selectedGesture});
         setCapturing(true);
         setShowDescription(false);
-        captureSequence({ shape: selectedShape, gesture: selectedGesture });
+        captureSequence({shape: selectedShape, gesture: selectedGesture});
     };
 
     const captureSequence = async (shapeGesture: { shape: string, gesture: string }) => {
@@ -122,6 +102,7 @@ const FourthTest: React.FC = () => {
     };
 
     const sendToBackend = async (gestureOrder: string[], images: string[]) => {
+        setLoading(true); // Включаем лоадер
         const formData = new FormData();
         const storedName = localStorage.getItem("name") || "";
         formData.append('name', storedName);
@@ -136,7 +117,7 @@ const FourthTest: React.FC = () => {
             for (let i = 0; i < byteString.length; i++) {
                 ia[i] = byteString.charCodeAt(i);
             }
-            const blob = new Blob([ab], { type: mimeString });
+            const blob = new Blob([ab], {type: mimeString});
             formData.append('images', blob, `image${index}.png`);
         });
 
@@ -147,15 +128,18 @@ const FourthTest: React.FC = () => {
 
         const result = await response.json();
         setResults(result);
+        setLoading(false);
+
     };
 
     return (
         <div className="text-center pt-5 min-h-screen">
             <Webcam ref={webcamRef} screenshotFormat="image/png"
-                    className={`mx-auto mb-4 rounded-lg shadow-lg  ${shapeGesture ? 'hidden' : 'block'}`} />
+                    className={`mx-auto mb-4 rounded-lg shadow-lg  ${shapeGesture ? 'hidden' : 'block'}`}/>
             {showDescription && (
                 <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
-                    <p>Запомните жест, привязанный к фигуре указанного цвета. Показывайте этот жест, когда вы увидите соответствующую фигуру на экране.</p>
+                    <p>Запомните жест, привязанный к фигуре указанного цвета. Показывайте этот жест, когда вы увидите
+                        соответствующую фигуру на экране.</p>
                 </div>
             )}
             <button
@@ -170,16 +154,16 @@ const FourthTest: React.FC = () => {
                 <div className="flex flex-col items-center mt-4">
                     <div className="flex items-center">
                         <Image src={`/figures/${SHAPE_IMAGES[shapeGesture.shape]}`}
-                               alt={shapeGesture.shape} width={150} height={150} />
+                               alt={shapeGesture.shape} width={150} height={150}/>
                         <span className="mx-2"> - </span>
                         <Image src={`/gestures/${GESTURE_IMAGES[shapeGesture.gesture]}`}
-                               alt={shapeGesture.gesture} width={150} height={150} />
+                               alt={shapeGesture.gesture} width={150} height={150}/>
                     </div>
                 </div>
             )}
 
             {currentShape && (
-                <div style={{ fontSize: '2rem', margin: '1rem' }}>
+                <div style={{fontSize: '2rem', margin: '1rem'}}>
                     <Image
                         src={`/figures/${SHAPE_IMAGES[currentShape]}`}
                         alt={currentShape}
@@ -187,6 +171,11 @@ const FourthTest: React.FC = () => {
                         height={150}
                         className="mx-auto"
                     />
+                </div>
+            )}
+            {loading && (
+                <div className="text-4xl mt-6 text-gray-800">
+                    <p>Loading...</p>
                 </div>
             )}
             {results && (
@@ -206,4 +195,4 @@ const FourthTest: React.FC = () => {
     );
 };
 
-export default FourthTest;
+export default ThirdTest;

@@ -12,6 +12,7 @@ const FirstTest: React.FC = () => {
     const [currentGesture, setCurrentGesture] = useState<string | null>(null);
     const [results, setResults] = useState<{ correct_count: number; results: string[] } | null>(null);
     const [showDescription, setShowDescription] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const startCapture = () => {
         setCapturing(true);
@@ -47,6 +48,7 @@ const FirstTest: React.FC = () => {
     };
 
     const sendToBackend = async (gestures: string[], images: string[]) => {
+        setLoading(true); // Включаем лоадер
         const formData = new FormData();
         const storedName = localStorage.getItem("name") || "";
         formData.append('name', storedName);
@@ -72,6 +74,7 @@ const FirstTest: React.FC = () => {
 
         const result = await response.json();
         setResults(result);
+        setLoading(false); // Выключаем лоадер
     };
 
     return (
@@ -91,13 +94,19 @@ const FirstTest: React.FC = () => {
             </button>
             {currentGesture && (
                 <div className="text-2xl mt-4 text-gray-800">
-                    <Image src={`/gestures/${GESTURE_IMAGES[currentGesture]}`} alt={currentGesture} width="150" height="150"
+                    <Image src={`/gestures/${GESTURE_IMAGES[currentGesture]}`} alt={currentGesture} width="150"
+                           height="150"
                            className="mx-auto"/>
                 </div>
             )}
             {countdown !== null && (
                 <div className="text-4xl mt-6 text-gray-800">
                     Отсчет: {countdown}
+                </div>
+            )}
+            {loading && (
+                <div className="text-4xl mt-6 text-gray-800">
+                    <p>Loading...</p>
                 </div>
             )}
             {results && (
