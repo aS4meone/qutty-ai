@@ -21,7 +21,7 @@ export default function Results() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch('https://ai-api.qutty.net/', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/`, {
                 headers: {'Accept': 'application/json'}
             });
             const result: DataItem[] = await response.json();
