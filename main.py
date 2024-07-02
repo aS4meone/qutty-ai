@@ -24,20 +24,20 @@ async def get_all_patients(db: Session = Depends(get_db)):
     return db.query(Patient).order_by(Patient.id).all()
 
 
-@app.post("/classify-strict")
-async def classify_strict(
-        gesture_names: str = Form(...),
-        images: List[UploadFile] = File(...),
-):
-    return classify_images_internal(gesture_names, images, strict=True)
-
-
-@app.post("/classify-not-strict")
-async def classify_not_strict(
-        gesture_names: str = Form(...),
-        images: List[UploadFile] = File(...),
-):
-    return classify_images_internal(gesture_names, images, strict=False)
+# @app.post("/classify-strict")
+# async def classify_strict(
+#         gesture_names: str = Form(...),
+#         images: List[UploadFile] = File(...),
+# ):
+#     return classify_images_internal(gesture_names, images, strict=True)
+#
+#
+# @app.post("/classify-not-strict")
+# async def classify_not_strict(
+#         gesture_names: str = Form(...),
+#         images: List[UploadFile] = File(...),
+# ):
+#     return classify_images_internal(gesture_names, images, strict=False)
 
 
 @app.post("/classify-strict-db")
@@ -66,47 +66,6 @@ async def classify_not_strict_db(
     return update_patient_in_db(db, name, test_number, correct_count)
 
 
-@app.post("/update-to-remember")
-async def update_to_remember(
-        name: str = Form(...),
-        to_remember: str = Form(...),
-        db: Session = Depends(get_db)
-):
-    patient = db.query(Patient).filter(Patient.name == name).first()
-
-    if patient:
-        patient.to_remember = to_remember
-    else:
-        patient = Patient(
-            name=name,
-            to_remember=to_remember,
-            first_test=None,
-            second_test=None,
-            third_test=None,
-            fourth_test=None,
-            fifth_test=None,
-            sixth_test=None,
-            diagnosis=None
-        )
-        db.add(patient)
-
-    db.commit()
-    return {"name": name, "to_remember": to_remember}
-
-
-@app.get("/get-gestures-by-name")
-async def get_gestures_by_name(
-        name: str,
-        db: Session = Depends(get_db)
-):
-    patient = db.query(Patient).filter(Patient.name == name).first()
-
-    if patient:
-        return {"name": name, "to_remember": patient.to_remember}
-    else:
-        return {"error": "Patient not found"}
-
-
 @app.post("/diagnosis")
 async def update_diagnosis(
         name: str = Form(...),
@@ -133,3 +92,22 @@ async def update_diagnosis(
 
     db.commit()
     return {"name": name, "diagnosis": diagnosis}
+
+
+@app.get("/results/{name}")
+def get_results(name: str, db: Session = Depends(get_db)):
+    patient = db.query(Patient).filter(Patient.name == name).first()
+    if patient:
+        res = patient.first_test + patient.second_test + patient.third_test + patient.fourth_test
+        if 19 <= res <= 13:
+            diagnosis = "Здоров"
+        elif 12 <= res <= 10:
+            diagnosis = "УКН"
+        elif 9 <= res <= 7:
+            diagnosis = "Когнитивные нарушения"
+        elif 7 > res >= 0:
+            diagnosis = "Выраженные когнитивные нарушения"
+        else:
+            diagnosis = "Некорректный результат"
+        return dict(diagnosis=diagnosis)
+    return dict(diagnosis="Пациент не найден")
