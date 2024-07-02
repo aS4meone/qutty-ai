@@ -2,7 +2,7 @@
 import React, {useRef, useState} from 'react';
 import Webcam from 'react-webcam';
 import Link from "next/link";
-import Image from 'next/image'
+import Image from 'next/image';
 import {GESTURE_IMAGES, shuffleGestures} from "@/lib/gestures";
 
 const FirstTest: React.FC = () => {
@@ -13,6 +13,7 @@ const FirstTest: React.FC = () => {
     const [results, setResults] = useState<{ correct_count: number; results: string[] } | null>(null);
     const [showDescription, setShowDescription] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [showInstruction, setShowInstruction] = useState(false);
 
     const startCapture = () => {
         setCapturing(true);
@@ -48,7 +49,7 @@ const FirstTest: React.FC = () => {
     };
 
     const sendToBackend = async (gestures: string[], images: string[]) => {
-        setLoading(true); // Включаем лоадер
+        setLoading(true);
         const formData = new FormData();
         const storedName = localStorage.getItem("name") || "";
         formData.append('name', storedName);
@@ -74,54 +75,76 @@ const FirstTest: React.FC = () => {
 
         const result = await response.json();
         setResults(result);
-        setLoading(false); // Выключаем лоадер
+        setLoading(false);
     };
 
     return (
         <div className="text-center pt-5 min-h-screen">
-            <Webcam ref={webcamRef} screenshotFormat="image/png" className="mx-auto mb-4 rounded-lg shadow-lg"/>
-            {showDescription && (
-                <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
-                    <p>Повторяйте жесты, которые вы увидите на экране.</p>
-                </div>
-            )}
-            <button
-                onClick={startCapture}
-                disabled={capturing}
-                className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-            >
-                Start
-            </button>
-            {currentGesture && (
-                <div className="text-2xl mt-4 text-gray-800">
-                    <Image src={`/gestures/${GESTURE_IMAGES[currentGesture]}`} alt={currentGesture} width="150"
-                           height="150"
-                           className="mx-auto"/>
-                </div>
-            )}
-            {countdown !== null && (
-                <div className="text-4xl mt-6 text-gray-800">
-                    Отсчет: {countdown}
-                </div>
-            )}
-            {loading && (
-                <div className="text-4xl mt-6 text-gray-800">
-                    <p>Loading...</p>
-                </div>
-            )}
-            {results && (
-                <div className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
-                    <Link href="test-2"
-                          className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+            {showInstruction ? (
+                <>
+                    <div className="flex justify-center">
+                        <Image src={`/gifs/first.gif`} alt={`pizda`} width={400} height={400} className="center"/>
+                    </div>
+                    <button
+                        onClick={() => setShowInstruction(false)}
+                        className="px-4 py-2 mt-3 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]"
                     >
-                        Next
-                    </Link>
-                    <p className="font-semibold mt-4">Результаты сохранены. Вы можете перейти к следующему тесту.
-                        Или вы можете начать тест заново, нажав на кнопку Start выше</p>
-                </div>
+                        Закрыть инструкцию
+                    </button>
+                </>
+            ) : (
+                <>
+                    <Webcam ref={webcamRef} screenshotFormat="image/png" className="mx-auto mb-4 rounded-lg shadow-lg"/>
+                    {showDescription && (
+                        <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
+                            <p>Повторяйте жесты, которые вы увидите на экране.</p>
+                        </div>
+                    )}
+                    <button
+                        onClick={startCapture}
+                        disabled={capturing}
+                        className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+                    >
+                        Start
+                    </button>
+                    <br/>
+                    <button
+                        onClick={() => setShowInstruction(true)}
+                        className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+                    >
+                        Инструкция
+                    </button>
+                    {currentGesture && (
+                        <div className="text-2xl mt-4 text-gray-800">
+                            <Image src={`/gestures/${GESTURE_IMAGES[currentGesture]}`} alt={currentGesture} width="150"
+                                   height="150" className="mx-auto"/>
+                        </div>
+                    )}
+                    {countdown !== null && (
+                        <div className="text-4xl mt-6 text-gray-800">
+                            Отсчет: {countdown}
+                        </div>
+                    )}
+                    {loading && (
+                        <div className="text-4xl mt-6 text-gray-800">
+                            <p>Loading...</p>
+                        </div>
+                    )}
+                    {results && (
+                        <div className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
+                            <Link href="test-2"
+                                  className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}>
+                                Next
+                            </Link>
+                            <p className="font-semibold mt-4">Результаты сохранены. Вы можете перейти к следующему
+                                тесту. Или вы можете начать тест заново, нажав на кнопку Start выше</p>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
+
 };
 
 export default FirstTest;

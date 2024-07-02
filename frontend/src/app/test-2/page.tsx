@@ -20,6 +20,7 @@ const SecondTest: React.FC = () => {
     const [showWebcam, setShowWebcam] = useState(true);
     const [promptText, setPromptText] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [showInstruction, setShowInstruction] = useState(false);
 
     const startCapture = async () => {
         setCapturing(true);
@@ -105,58 +106,84 @@ const SecondTest: React.FC = () => {
 
     return (
         <div className="text-center pt-5 min-h-screen">
-            {showWebcam && (
-                <Webcam ref={webcamRef} screenshotFormat="image/png" className="mx-auto mb-4 rounded-lg shadow-lg"/>
-            )}
-            {showDescription && (
-                <div className="description mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 text-xl max-w-xl">
-                    <p>Запомните порядок жестов. Позже покажите жест по порядковому номеру</p>
-                </div>
-            )}
-            <button
-                onClick={startCapture}
-                disabled={capturing}
-                className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md ${capturing ? 'hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-            >
-                Start
-            </button>
-            {currentGestureIndex !== null && currentGestures.length > 0 && (
-                <div className="text-4xl font-bold mt-6 text-gray-800">
-                    <Image
-                        src={`/gestures/${GESTURE_IMAGES[currentGestures[currentGestureIndex]]}`}
-                        alt={currentGestures[currentGestureIndex]}
-                        width={150}
-                        height={150}
-                        className="mx-auto"
-                    />
-                    <h2>Жест {currentGestureIndex + 1}</h2>
-                </div>
-            )}
-            {promptText && (
-                <div className="text-4xl mt-6 text-gray-800">
-                    {promptText}
-                </div>
-            )}
-            {countdown !== null && (
-                <div className="text-2xl mt-6 text-gray-800">
-                    Отсчет: {countdown}
-                </div>
-            )}
-            {loading && (
-                <div className="text-4xl mt-6 text-gray-800">
-                    <p>Loading...</p>
-                </div>
-            )}
-            {results && (
-                <div className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
-                    <Link href="test-3"
-                          className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]`}
+            {showInstruction ? (
+                <>
+                    <div className="flex justify-center">
+                        <Image src={`/gifs/second.gif`} alt={`pizda`} width={400} height={400} className="center"/>
+                    </div>
+                    <button
+                        onClick={() => setShowInstruction(false)}
+                        className="px-4 py-2 mt-3 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]"
                     >
-                        Next
-                    </Link>
-                    <p className="font-semibold mt-4">Результаты сохранены. Вы можете перейти к следующему тесту.
-                        Или вы можете начать тест заново, нажав на кнопку Start выше</p>
-                </div>
+                        Закрыть инструкцию
+                    </button>
+                </>
+            ) : (
+                <>
+                    {showWebcam && (
+                        <Webcam ref={webcamRef} screenshotFormat="image/png"
+                                className="mx-auto mb-4 rounded-lg shadow-lg"/>
+                    )}
+                    {showDescription && (
+                        <div
+                            className="description mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 text-xl max-w-xl">
+                            <p>Запомните порядок жестов. Позже покажите жест по порядковому номеру</p>
+                        </div>
+                    )}
+                    <button
+                        onClick={startCapture}
+                        disabled={capturing}
+                        className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md ${capturing ? 'hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+                    >
+                        Start
+                    </button>
+                    <br/>
+                    <button
+                        onClick={() => setShowInstruction(true)}
+                        className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+                    >
+                        Инструкция
+                    </button>
+                    {currentGestureIndex !== null && currentGestures.length > 0 && (
+                        <div className="text-4xl font-bold mt-6 text-gray-800">
+                            <Image
+                                src={`/gestures/${GESTURE_IMAGES[currentGestures[currentGestureIndex]]}`}
+                                alt={currentGestures[currentGestureIndex]}
+                                width={150}
+                                height={150}
+                                className="mx-auto"
+                            />
+                            <h2>Жест {currentGestureIndex + 1}</h2>
+                        </div>
+                    )}
+                    {promptText && (
+                        <div className="text-4xl mt-6 text-gray-800">
+                            {promptText}
+                        </div>
+                    )}
+                    {countdown !== null && (
+                        <div className="text-2xl mt-6 text-gray-800">
+                            Отсчет: {countdown}
+                        </div>
+                    )}
+                    {loading && (
+                        <div className="text-4xl mt-6 text-gray-800">
+                            <p>Loading...</p>
+                        </div>
+                    )}
+                    {results && (
+                        <div className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
+                            <Link href="test-3"
+                                  className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]`}
+                            >
+                                Next
+                            </Link>
+                            <p className="font-semibold mt-4">Результаты сохранены. Вы можете перейти к следующему
+                                тесту.
+                                Или вы можете начать тест заново, нажав на кнопку Start выше</p>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
