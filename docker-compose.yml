@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   back:
     build: .
@@ -8,6 +9,8 @@ services:
       - .env
     depends_on:
       - db
+    volumes:
+      - python_packages:/usr/local/lib/python3.12/site-packages
     command: /bin/sh -c "uvicorn main:app --host 0.0.0.0 --port 8872"
 
   db:
@@ -22,3 +25,4 @@ services:
 
 volumes:
   postgres_data:
+  python_packages:

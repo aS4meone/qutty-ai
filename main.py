@@ -99,15 +99,17 @@ def get_results(name: str, db: Session = Depends(get_db)):
     patient = db.query(Patient).filter(Patient.name == name).first()
     if patient:
         res = patient.first_test + patient.second_test + patient.third_test + patient.fourth_test
-        if 19 <= res <= 13:
+        print(res)
+        if 19 >= res >= 13:
             diagnosis = "Здоров"
-        elif 12 <= res <= 10:
+        elif 12 >= res >= 10:
             diagnosis = "УКН"
-        elif 9 <= res <= 7:
+        elif 9 >= res >= 7:
             diagnosis = "Когнитивные нарушения"
         elif 7 > res >= 0:
             diagnosis = "Выраженные когнитивные нарушения"
         else:
             diagnosis = "Некорректный результат"
+            print(321)
         return dict(diagnosis=diagnosis)
     return dict(diagnosis="Пациент не найден")
