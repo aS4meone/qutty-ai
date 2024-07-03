@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from fastapi import FastAPI, File, UploadFile, Form, Depends
+from fastapi import FastAPI, File, UploadFile, Form, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
@@ -7,6 +7,7 @@ from app.dependencies.database.database import get_db
 from app.models.patient_model import Patient
 from app.utils.ai_integration import classify_images_internal
 from app.utils.db import update_patient_in_db
+from app.utils.generate_recommendations import generate_recommendations
 
 app = FastAPI()
 
@@ -42,15 +43,18 @@ async def get_all_patients(db: Session = Depends(get_db)):
 
 @app.post("/classify-strict-db")
 async def classify_strict_db(
+        background_tasks: BackgroundTasks,
         name: str = Form(...),
         test_number: int = Form(...),
         gesture_names: str = Form(...),
         images: List[UploadFile] = File(...),
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
 ):
     result = classify_images_internal(gesture_names, images, strict=True)
     correct_count = result["correct_count"]
-    return update_patient_in_db(db, name, test_number, correct_count)
+    update_patient_in_db(db, name, test_number, correct_count)
+
+    return {"status": "success"}
 
 
 @app.post("/classify-not-strict-db")
@@ -97,19 +101,27 @@ async def update_diagnosis(
 @app.get("/results/{name}")
 def get_results(name: str, db: Session = Depends(get_db)):
     patient = db.query(Patient).filter(Patient.name == name).first()
+    diagnosis = ""
+    if not patient:
+        return "Пациент не найден"
+
+    if patient.recommendations:
+        return dict(recommendations=patient.recommendations)
+
     if patient:
         res = patient.first_test + patient.second_test + patient.third_test + patient.fourth_test
-        print(res)
         if 19 >= res >= 13:
-            diagnosis = "Здоров"
+            diagnosis = "Healthy"
         elif 12 >= res >= 10:
-            diagnosis = "УКН"
+            diagnosis = "Mild cognitive impairment"
         elif 9 >= res >= 7:
-            diagnosis = "Когнитивные нарушения"
+            diagnosis = "Moderate cognitive impairment"
         elif 7 > res >= 0:
-            diagnosis = "Выраженные когнитивные нарушения"
+            diagnosis = "Severe cognitive impairment"
         else:
             diagnosis = "Некорректный результат"
-            print(321)
-        return dict(diagnosis=diagnosis)
-    return dict(diagnosis="Пациент не найден")
+
+    recommendations = generate_recommendations(diagnosis, name)
+    patient.recommendations = recommendations
+    db.commit()
+    return dict(recommendations=patient.recommendations)

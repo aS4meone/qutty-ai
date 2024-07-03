@@ -16,3 +16,4 @@ class Patient(Base):
     fifth_test = Column(SmallInteger)
     sixth_test = Column(SmallInteger)
     diagnosis = Column(String)
+    recommendations = Column(String)
