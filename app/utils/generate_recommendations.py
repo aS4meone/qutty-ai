@@ -1,4 +1,3 @@
-from googletrans import Translator
 from langchain_huggingface import HuggingFaceEndpoint
 
 huggingfacehub_api_token = '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'
