@@ -9,19 +9,13 @@ llm = HuggingFaceEndpoint(repo_id='meta-llama/Meta-Llama-3-8B-Instruct',
 
 def to_llama(diagnosis, name):
     input = (
-        f'You are a medical specialist in dementia. Your job is to give a patient with diagnosis {diagnosis} recommendations for health and memory training, and to recommend seeing a specialist. ONLY 6 RECOMMENDATIONS. Dont write anything except recommendations. The name of a patient is - {name}')
+        f'Ты - медицинский специалист по деменции. Твоя задача - дать пациенту с диагнозом {diagnosis} рекомендации по оздоровлению и тренировке памяти, а также порекомендовать обратиться к специалисту. ВСЕГО 6 РЕКОМЕНДАЦИЙ. Не пишешь ничего, кроме рекомендаций. Имя пациента - {name}')
     output = llm.invoke(input)
     return output
-
-
-def translate_text(text, dest_language='ru'):
-    translator = Translator()
-    translation = translator.translate(text, dest=dest_language)
-    return translation.text
 
 
 def generate_recommendations(diagnosis, name):
     print(diagnosis)
     text = to_llama(diagnosis, name)
     print(text)
-    return translate_text(text)
+    return text
