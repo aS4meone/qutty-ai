@@ -131,10 +131,14 @@ def get_results(name: str, db: Session = Depends(get_db)):
 def change(db: Session = Depends(get_db)):
     patients = db.query(Patient).all()
 
-    # Swap second_test and fourth_test for each patient
+    # Rearrange second_test, third_test, and fourth_test for each patient
     for patient in patients:
-        patient.second_test, patient.fourth_test = patient.fourth_test, patient.second_test
+        second_test_value = patient.second_test
+        third_test_value = patient.third_test
+        fourth_test_value = patient.fourth_test
 
-    # Commit the transaction
+        patient.second_test = third_test_value
+        patient.third_test = fourth_test_value
+        patient.fourth_test = second_test_value
     db.commit()
     return "Success"
