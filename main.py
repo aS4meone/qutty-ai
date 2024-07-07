@@ -125,3 +125,16 @@ def get_results(name: str, db: Session = Depends(get_db)):
     patient.recommendations = recommendations
     db.commit()
     return dict(recommendations=patient.recommendations)
+
+
+@app.get("/lol")
+def change(db: Session = Depends(get_db)):
+    patients = db.query(Patient).all()
+
+    # Swap second_test and fourth_test for each patient
+    for patient in patients:
+        patient.second_test, patient.fourth_test = patient.fourth_test, patient.second_test
+
+    # Commit the transaction
+    db.commit()
+    return "Success"

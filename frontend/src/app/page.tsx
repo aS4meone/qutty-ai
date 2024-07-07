@@ -38,7 +38,7 @@ export default function MainPage() {
                             </p>
                             <button
                                 onClick={openModal}
-                                className="inline-flex h-10 items-center justify-center rounded-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)] px-8 text-sm font-medium shadow transition-colors hover:bg-[hsl(308_56%_75%)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(210_40%_60%)] disabled:pointer-events-none disabled:opacity-50"
+                                className="inline-flex h-10 items-center justify-center rounded-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)] px-8 text-sm font-medium shadow transition-colors hover:bg-[hsl(308_56%_75%)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(210_40%_60%)] disabled:pointer-events-none disabled:opacity-50 lg:w-1/4 md:w-1/2"
                             >
                                 Start Test
                             </button>

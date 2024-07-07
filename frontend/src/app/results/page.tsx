@@ -50,7 +50,8 @@ export default function Results() {
             <div className="max-w-4xl mx-auto p-4 bg-white shadow-md rounded-lg">
                 <div className="mb-4">
                     <h2 className="text-2xl font-bold">Данные</h2>
-                    <p className="text-gray-600">Таблица с информацией о пациентах.<br/>Максимальные баллы по тестам указаны в скобках.</p>
+                    <p className="text-gray-600">Таблица с информацией о пациентах.<br/>Максимальные баллы по тестам
+                        указаны в скобках.</p>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -63,13 +64,13 @@ export default function Results() {
                                 1 (8)
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Тест
-                                2 (2)
+                                2 (3)
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Тест
-                                3 (3)
+                                3 (6)
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Тест
-                                4 (6)
+                                4 (2)
                             </th>
                         </tr>
                         </thead>

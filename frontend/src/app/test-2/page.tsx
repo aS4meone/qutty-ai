@@ -2,85 +2,113 @@
 import React, {useRef, useState} from 'react';
 import Webcam from 'react-webcam';
 import Link from "next/link";
-import Image from "next/image";
-import {GESTURE_IMAGES, GESTURES} from "@/lib/gestures";
+import Image from 'next/image';
+import {GESTURE_IMAGES, SHAPE_IMAGES} from "@/lib/gestures";
 
-const shuffleGestures = (): string[] => {
-    return GESTURES.sort(() => 0.5 - Math.random()).slice(0, 5);
+const GESTURES = ['dislike', 'like', 'rock', 'ok', 'peace', 'one', 'fist', 'palm'];
+
+const SHAPES = ['black_circle', 'black_square', 'black_star', 'black_triangle', 'white_circle', 'white_square', 'white_star', "white_triangle"];
+
+const getRandomShape = () => {
+    return SHAPES[Math.floor(Math.random() * SHAPES.length)];
+};
+
+const getRandomGesture = () => {
+    return GESTURES[Math.floor(Math.random() * GESTURES.length)];
+};
+
+const generateShapeSequence = (selectedShape: string) => {
+    const targetShapes = [...Array(3).fill(selectedShape)];
+    const fillerShapes = [];
+    while (fillerShapes.length < 27) {
+        const randomShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+        if (randomShape !== selectedShape) {
+            fillerShapes.push(randomShape);
+        }
+    }
+    const combinedShapes = [...targetShapes, ...fillerShapes];
+    for (let i = combinedShapes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [combinedShapes[i], combinedShapes[j]] = [combinedShapes[j], combinedShapes[i]];
+    }
+    return combinedShapes;
 };
 
 const SecondTest: React.FC = () => {
     const webcamRef = useRef<Webcam>(null);
     const [capturing, setCapturing] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
-    const [currentGestures, setCurrentGestures] = useState<string[]>([]);
-    const [currentGestureIndex, setCurrentGestureIndex] = useState<number | null>(null);
+    const [currentShape, setCurrentShape] = useState<string | null>(null);
     const [results, setResults] = useState<{ correct_count: number; results: string[] } | null>(null);
+    const [shapeGesture, setShapeGesture] = useState<{ shape: string, gesture: string } | null>(null);
     const [showDescription, setShowDescription] = useState(true);
-    const [showWebcam, setShowWebcam] = useState(true);
-    const [promptText, setPromptText] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [showInstruction, setShowInstruction] = useState(false);
 
-    const startCapture = async () => {
+    const startCapture = () => {
+        const selectedShape = getRandomShape();
+        const selectedGesture = getRandomGesture();
+        setShapeGesture({shape: selectedShape, gesture: selectedGesture});
         setCapturing(true);
         setShowDescription(false);
-        setShowWebcam(false);
+        captureSequence({shape: selectedShape, gesture: selectedGesture});
+    };
 
-        const gestures = shuffleGestures();
-        setCurrentGestures(gestures);
+    const captureSequence = async (shapeGesture: { shape: string, gesture: string }) => {
+        const images: string[] = [];
+        const gestureOrder: string[] = [];
+        const shapeSequence = generateShapeSequence(shapeGesture.shape);
 
-        for (let i = 0; i < gestures.length; i++) {
-            setCurrentGestureIndex(i);
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+        for (let i = 5; i > 0; i--) {
+            setCountdown(i);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+        setCountdown(null);
+        setShapeGesture(null);
+
+        let targetShapeCount = 0;
+
+        for (let i = 0; i < shapeSequence.length; i++) {
+            const currentShape = shapeSequence[i];
+            setCurrentShape(currentShape);
+
+            if (currentShape === shapeGesture.shape) {
+                targetShapeCount++;
+                for (let j = 2; j > 0; j--) {
+                    setCountdown(j);
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                }
+                setCountdown(null);
+
+                if (webcamRef.current) {
+                    const imageSrc = webcamRef.current.getScreenshot();
+                    if (imageSrc) {
+                        images.push(imageSrc);
+                        gestureOrder.push(shapeGesture.gesture);
+                        console.log(`Captured gesture for shape ${currentShape}`);
+                    }
+                }
+
+                if (targetShapeCount === 3) {
+                    break;
+                }
+            } else {
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+            }
         }
 
-        setCurrentGestureIndex(null);
-        setCurrentGestures([]);
-        setShowWebcam(true);
-        await captureSequence(gestures);
-    };
-
-    const captureSequence = async (gestures: string[]) => {
-        const images: string[] = [];
-
-        const captureGesture = async (index: number, gestureNumber: number) => {
-            setPromptText(`Покажите жест который был под номером ${gestureNumber}`);
-            if (gestureNumber == 3) {
-                setPromptText(`А теперь покажите жест который был под номером ${gestureNumber}`)
-            }
-            setCountdown(5);
-            for (let i = 5; i > 0; i--) {
-                setCountdown(i);
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-            }
-            setCountdown(null);
-            setPromptText(null);
-
-            if (webcamRef.current) {
-                const imageSrc = webcamRef.current.getScreenshot();
-                if (imageSrc) {
-                    images.push(imageSrc);
-                    console.log(`Captured gesture ${gestureNumber}: ${gestures[index]}`);
-                }
-            }
-        };
-
-        await captureGesture(4, 5); // Gesture 5
-        await captureGesture(2, 3); // Gesture 3
-
-        setCurrentGestureIndex(null);
+        setCurrentShape(null);
         setCapturing(false);
-        sendToBackend([gestures[4], gestures[2]], images);
+        sendToBackend(gestureOrder, images);
     };
 
-    const sendToBackend = async (gestures: string[], images: string[]) => {
+    const sendToBackend = async (gestureOrder: string[], images: string[]) => {
         setLoading(true); // Включаем лоадер
         const formData = new FormData();
         const storedName = localStorage.getItem("name") || "";
         formData.append('name', storedName);
         formData.append("test_number", "2");
-        formData.append('gesture_names', gestures.join(','));
+        formData.append('gesture_names', gestureOrder.join(','));
 
         images.forEach((image, index) => {
             const byteString = atob(image.split(',')[1]);
@@ -94,7 +122,7 @@ const SecondTest: React.FC = () => {
             formData.append('images', blob, `image${index}.png`);
         });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-not-strict-db`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-strict-db`, {
             method: 'POST',
             body: formData,
         });
@@ -102,6 +130,7 @@ const SecondTest: React.FC = () => {
         const result = await response.json();
         setResults(result);
         setLoading(false);
+
     };
 
     return (
@@ -109,7 +138,7 @@ const SecondTest: React.FC = () => {
             {showInstruction ? (
                 <>
                     <div className="flex justify-center">
-                        <Image src={`/gifs/second.gif`} alt={`pizda`} width={400} height={400} className="center"/>
+                        <Image src={`/gifs/third.gif`} alt={`pizda`} width={400} height={400} className="center"/>
                     </div>
                     <button
                         onClick={() => setShowInstruction(false)}
@@ -120,14 +149,13 @@ const SecondTest: React.FC = () => {
                 </>
             ) : (
                 <>
-                    {showWebcam && (
-                        <Webcam ref={webcamRef} screenshotFormat="image/png"
-                                className="mx-auto mb-4 rounded-lg shadow-lg"/>
-                    )}
+                    <Webcam ref={webcamRef} screenshotFormat="image/png"
+                            className={`mx-auto mb-4 rounded-lg shadow-lg  ${shapeGesture ? 'hidden' : 'block'}`}/>
                     {showDescription && (
-                        <div
-                            className="description mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 text-xl max-w-xl">
-                            <p>Запомните порядок жестов. Позже покажите жест по порядковому номеру</p>
+                        <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
+                            <p>Запомните жест, привязанный к фигуре указанного цвета. Показывайте этот жест, когда вы
+                                увидите
+                                соответствующую фигуру на экране.</p>
                         </div>
                     )}
                     <button
@@ -144,26 +172,28 @@ const SecondTest: React.FC = () => {
                     >
                         Инструкция
                     </button>
-                    {currentGestureIndex !== null && currentGestures.length > 0 && (
-                        <div className="text-4xl font-bold mt-6 text-gray-800">
+
+                    {shapeGesture && (
+                        <div className="flex flex-col items-center mt-4">
+                            <div className="flex items-center">
+                                <Image src={`/figures/${SHAPE_IMAGES[shapeGesture.shape]}`}
+                                       alt={shapeGesture.shape} width={150} height={150}/>
+                                <span className="mx-2"> - </span>
+                                <Image src={`/gestures/${GESTURE_IMAGES[shapeGesture.gesture]}`}
+                                       alt={shapeGesture.gesture} width={150} height={150}/>
+                            </div>
+                        </div>
+                    )}
+
+                    {currentShape && (
+                        <div style={{fontSize: '2rem', margin: '1rem'}}>
                             <Image
-                                src={`/gestures/${GESTURE_IMAGES[currentGestures[currentGestureIndex]]}`}
-                                alt={currentGestures[currentGestureIndex]}
+                                src={`/figures/${SHAPE_IMAGES[currentShape]}`}
+                                alt={currentShape}
                                 width={150}
                                 height={150}
                                 className="mx-auto"
                             />
-                            <h2>Жест {currentGestureIndex + 1}</h2>
-                        </div>
-                    )}
-                    {promptText && (
-                        <div className="text-4xl mt-6 text-gray-800">
-                            {promptText}
-                        </div>
-                    )}
-                    {countdown !== null && (
-                        <div className="text-2xl mt-6 text-gray-800">
-                            Отсчет: {countdown}
                         </div>
                     )}
                     {loading && (
@@ -172,7 +202,8 @@ const SecondTest: React.FC = () => {
                         </div>
                     )}
                     {results && (
-                        <div className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
+                        <div
+                            className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
                             <Link href="test-3"
                                   className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]`}
                             >
