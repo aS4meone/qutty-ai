@@ -18,20 +18,26 @@ const getRandomGesture = () => {
 };
 
 const generateShapeSequence = (selectedShape: string) => {
-    const targetShapes = [...Array(3).fill(selectedShape)];
-    const fillerShapes = [];
-    while (fillerShapes.length < 27) {
-        const randomShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-        if (randomShape !== selectedShape) {
-            fillerShapes.push(randomShape);
+    const sequence: string[] = [];
+    const addRandomShapes = (count : any) => {
+        for (let i = 0; i < count; i++) {
+            let randomShape;
+            do {
+                randomShape = getRandomShape();
+            } while (randomShape === selectedShape || (sequence.length > 0 && randomShape === sequence[sequence.length - 1]));
+            sequence.push(randomShape);
         }
-    }
-    const combinedShapes = [...targetShapes, ...fillerShapes];
-    for (let i = combinedShapes.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [combinedShapes[i], combinedShapes[j]] = [combinedShapes[j], combinedShapes[i]];
-    }
-    return combinedShapes;
+    };
+
+    // Pattern: 3 incorrect, 1 correct, 2 incorrect, 1 correct, 3 incorrect, 1 correct
+    addRandomShapes(3);
+    sequence.push(selectedShape);
+    addRandomShapes(2);
+    sequence.push(selectedShape);
+    addRandomShapes(3);
+    sequence.push(selectedShape);
+
+    return sequence;
 };
 
 const SecondTest: React.FC = () => {
@@ -103,7 +109,7 @@ const SecondTest: React.FC = () => {
     };
 
     const sendToBackend = async (gestureOrder: string[], images: string[]) => {
-        setLoading(true); // Включаем лоадер
+        setLoading(true); // Enable loader
         const formData = new FormData();
         const storedName = localStorage.getItem("name") || "";
         formData.append('name', storedName);
