@@ -73,17 +73,23 @@ async def classify_not_strict_db(
 @app.post("/diagnosis")
 async def update_diagnosis(
         name: str = Form(...),
-        diagnosis: str = Form(...),
+        moca: str = Form(...),
+        gender: str = Form(...),
+        age: str = Form(...),
         db: Session = Depends(get_db)
 ):
     patient = db.query(Patient).filter(Patient.name == name).first()
 
     if patient:
-        patient.diagnosis = diagnosis
+        patient.moca = moca
+        patient.gender = gender
+        patient.age = age
     else:
         patient = Patient(
             name=name,
-            diagnosis=diagnosis,
+            moca=moca,
+            gender=gender,
+            age=age,
             first_test=None,
             second_test=None,
             third_test=None,
@@ -95,7 +101,7 @@ async def update_diagnosis(
         db.add(patient)
 
     db.commit()
-    return {"name": name, "diagnosis": diagnosis}
+    return {"name": name, "moca": moca, "gender": gender, "age": age}
 
 
 @app.get("/results/{name}")

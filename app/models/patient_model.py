@@ -8,6 +8,8 @@ class Patient(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
+    gender = Column(String)
+    age = Column(Integer)
     to_remember = Column(String)
     first_test = Column(SmallInteger)
     second_test = Column(SmallInteger)
@@ -16,4 +18,5 @@ class Patient(Base):
     fifth_test = Column(SmallInteger)
     sixth_test = Column(SmallInteger)
     diagnosis = Column(String)
+    moca = Column(String)
     recommendations = Column(String)
