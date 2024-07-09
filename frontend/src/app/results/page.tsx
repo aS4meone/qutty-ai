@@ -7,6 +7,9 @@ import Link from "next/link";
 interface DataItem {
     id: number;
     name: string;
+    gender: string;
+    age: string;
+    moca: string;
     diagnosis: string;
     first_test: number;
     second_test: number;
@@ -59,7 +62,11 @@ export default function Results() {
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Имя</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Диагноз</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Пол</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Возраст</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Балл
+                                MoCa
+                            </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Тест
                                 1 (8)
                             </th>
@@ -79,7 +86,13 @@ export default function Results() {
                             <tr key={item.id}>
                                 <td className="px-6 py-4 whitespace-nowrap">{item.id}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{item.gender}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{item.age}</td>
+                                {item.moca != null ?
+                                    <td className="px-6 py-4 whitespace-nowrap">{item.moca}</td> :
                                 <td className="px-6 py-4 whitespace-nowrap">{item.diagnosis}</td>
+
+                                }
                                 <td className="px-6 py-4 whitespace-nowrap text-center">{item.first_test}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">{item.second_test}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">{item.third_test}</td>

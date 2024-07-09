@@ -97,8 +97,8 @@ const TestModal: FC<TestModalProps> = ({onClose}) => {
                             className="w-3/4 px-4 py-2 border rounded-2xl border-blue-200 bg-[hsl(210_100%_98%)]"
                         >
                             <option value="" disabled>Select gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="Male">Мужчина</option>
+                            <option value="Female">Женщина</option>
                         </select>
                     </div>
                     <div className="flex items-center">

@@ -1,3 +1,4 @@
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, File, UploadFile, Form, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,7 +23,7 @@ app.add_middleware(
 
 @app.get("/")
 async def get_all_patients(db: Session = Depends(get_db)):
-    return db.query(Patient).order_by(Patient.id).all()
+    return db.query(Patient).order_by(desc(Patient.id)).all()
 
 
 # @app.post("/classify-strict")
@@ -132,19 +133,18 @@ def get_results(name: str, db: Session = Depends(get_db)):
     db.commit()
     return dict(recommendations=patient.recommendations)
 
-
-@app.get("/lol")
-def change(db: Session = Depends(get_db)):
-    patients = db.query(Patient).all()
-
-    # Rearrange second_test, third_test, and fourth_test for each patient
-    for patient in patients:
-        second_test_value = patient.second_test
-        third_test_value = patient.third_test
-        fourth_test_value = patient.fourth_test
-
-        patient.second_test = third_test_value
-        patient.third_test = fourth_test_value
-        patient.fourth_test = second_test_value
-    db.commit()
-    return "Success"
+# @app.get("/lol")
+# def change(db: Session = Depends(get_db)):
+#     patients = db.query(Patient).all()
+#
+#     # Rearrange second_test, third_test, and fourth_test for each patient
+#     for patient in patients:
+#         second_test_value = patient.second_test
+#         third_test_value = patient.third_test
+#         fourth_test_value = patient.fourth_test
+#
+#         patient.second_test = third_test_value
+#         patient.third_test = fourth_test_value
+#         patient.fourth_test = second_test_value
+#     db.commit()
+#     return "Success"
