@@ -1,3 +1,5 @@
+import json
+
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, File, UploadFile, Form, Depends, BackgroundTasks
@@ -112,26 +114,51 @@ def get_results(name: str, db: Session = Depends(get_db)):
     if not patient:
         return "Пациент не найден"
 
-    if patient.recommendations:
-        return dict(recommendations=patient.recommendations)
-
     if patient:
         res = patient.first_test + patient.second_test + patient.third_test + patient.fourth_test
-        if 19 >= res >= 13:
-            diagnosis = "Healthy"
+
+        # Возрастные корректировки
+        if 50 <= int(patient.age) <= 55:
+            res -= 1
+        elif 56 <= int(patient.age) <= 60:
+            res -= 2
+        elif 61 <= int(patient.age) <= 65:
+            res -= 3
+        elif int(patient.age) >= 66:
+            res -= 4
+
+        if res >= 17:
+            diagnosis = "Очень хорошие когнитивные способности"
+        elif 16 >= res >= 13:
+            diagnosis = "Не наблюдается когнитивных снижений (здоров)"
         elif 12 >= res >= 10:
-            diagnosis = "Mild cognitive impairment"
+            diagnosis = "Легкое когнитивное снижение"
         elif 9 >= res >= 7:
-            diagnosis = "Moderate cognitive impairment"
-        elif 7 > res >= 0:
-            diagnosis = "Severe cognitive impairment"
+            diagnosis = "Умеренное когнитивное снижение"
+        elif 6 >= res >= 0:
+            diagnosis = "Грубое когнитивное снижение"
         else:
             diagnosis = "Некорректный результат"
 
-    recommendations = generate_recommendations(diagnosis, name)
+    if patient.recommendations:
+        return [{
+            "name": name,
+            "age": patient.age,
+            "predicted_diagnosis": diagnosis,
+        },
+            json.loads(patient.recommendations)
+        ]
+    print(diagnosis, patient.age)
+    recommendations = generate_recommendations(diagnosis, patient.age)
     patient.recommendations = recommendations
     db.commit()
-    return dict(recommendations=patient.recommendations)
+    return [{
+        "name": name,
+        "age": patient.age,
+        "predicted_diagnosis": diagnosis,
+    },
+        json.loads(patient.recommendations)
+    ]
 
 # @app.get("/lol")
 # def change(db: Session = Depends(get_db)):

@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation';
 const RecommendationsPage = () => {
   const pathname = usePathname();
   const name = pathname.split('/').pop();
-  const [recommendations, setRecommendations] = useState<string | null>(null);
+  const [user, setUser] = useState<{ name: string; age: number; predicted_diagnosis: string } | null>(null);
+  const [recommendations, setRecommendations] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -16,7 +17,8 @@ const RecommendationsPage = () => {
           const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/results/${name}`);
           if (response.ok) {
             const data = await response.json();
-            setRecommendations(data.recommendations);
+            setUser(data[0]);
+            setRecommendations(data[1].recommendations);
           } else {
             const errorText = await response.text();
             setError(errorText);
@@ -33,7 +35,7 @@ const RecommendationsPage = () => {
   }, [name]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-100">
       <div className="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-800">Рекомендации</h1>
@@ -49,9 +51,27 @@ const RecommendationsPage = () => {
             <p className="text-lg font-semibold">{error}</p>
           </div>
         )}
-        {recommendations && !loading && (
+        {user && !loading && (
           <div className="space-y-4">
-            <p className="text-gray-700">{recommendations}</p>
+            <p className="text-gray-700">
+              <span className="font-bold">Имя:</span> {user.name}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-bold">Возраст:</span> {user.age}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-bold">Предполагаемый диагноз:</span> {user.predicted_diagnosis}
+            </p>
+          </div>
+        )}
+        {recommendations.length > 0 && !loading && (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold text-gray-800">Рекомендации:</h2>
+            <ul className="list-disc list-inside text-gray-700">
+              {recommendations.map((rec, index) => (
+                <li key={index}>{rec}</li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
