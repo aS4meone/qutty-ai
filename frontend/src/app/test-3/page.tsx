@@ -1,9 +1,9 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import Webcam from 'react-webcam';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GESTURE_IMAGES, SHAPE_IMAGES } from '@/lib/gestures';
+import {GESTURE_IMAGES, SHAPE_IMAGES} from '@/lib/gestures';
 
 const GESTURES = ['dislike', 'like', 'rock', 'ok', 'peace', 'one', 'fist', 'palm'];
 
@@ -32,21 +32,21 @@ const generateShapeSequence = (selectedShapes: any) => {
     const incorrectShapes = SHAPES.filter(shape => !selectedShapes.includes(shape));
 
     const pattern = [
-        { correct: 0, incorrect: 2 },
-        { correct: 1, incorrect: 0 },
-        { correct: 0, incorrect: 3 },
-        { correct: 1, incorrect: 0 },
-        { correct: 0, incorrect: 4 },
-        { correct: 1, incorrect: 0 },
-        { correct: 0, incorrect: 3 },
-        { correct: 1, incorrect: 0 },
-        { correct: 0, incorrect: 2 },
-        { correct: 1, incorrect: 0 },
-        { correct: 0, incorrect: 3 },
-        { correct: 1, incorrect: 0 }
+        {correct: 0, incorrect: 2},
+        {correct: 1, incorrect: 0},
+        {correct: 0, incorrect: 3},
+        {correct: 1, incorrect: 0},
+        {correct: 0, incorrect: 4},
+        {correct: 1, incorrect: 0},
+        {correct: 0, incorrect: 3},
+        {correct: 1, incorrect: 0},
+        {correct: 0, incorrect: 2},
+        {correct: 1, incorrect: 0},
+        {correct: 0, incorrect: 3},
+        {correct: 1, incorrect: 0}
     ];
 
-    let shapeCount = { [selectedShapes[0]]: 0, [selectedShapes[1]]: 0 };
+    let shapeCount = {[selectedShapes[0]]: 0, [selectedShapes[1]]: 0};
     let combinedShapes: any = [];
 
     pattern.forEach(step => {
@@ -111,7 +111,7 @@ const ThirdTest: React.FC = () => {
         const gestureOrder: string[] = [];
         const allShapes = Object.keys(shapesGestures);
         const shapeSequence = generateShapeSequence(allShapes);
-        const shapeCount: { [key: string]: number } = { [allShapes[0]]: 0, [allShapes[1]]: 0 };
+        const shapeCount: { [key: string]: number } = {[allShapes[0]]: 0, [allShapes[1]]: 0};
 
         for (let i = 5; i > 0; i--) {
             setCountdown(i);
@@ -130,19 +130,17 @@ const ThirdTest: React.FC = () => {
                     continue;
                 }
 
-                for (let j = 2; j > 0; j--) {
-                    setCountdown(j);
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                }
-                setCountdown(null);
-
-                if (webcamRef.current) {
-                    const imageSrc = webcamRef.current.getScreenshot();
-                    if (imageSrc) {
-                        images.push(imageSrc);
-                        gestureOrder.push(shapesGestures[currentShape]);
-                        console.log(`Captured gesture for shape ${currentShape}`);
+                for (let j = 2; j >= 0; j--) {
+                    setCountdown(j === 0 ? null : j);
+                    if (webcamRef.current) {
+                        const imageSrc = webcamRef.current.getScreenshot();
+                        if (imageSrc) {
+                            images.push(imageSrc);
+                            gestureOrder.push(shapesGestures[currentShape]);
+                            console.log(`Captured gesture for shape ${currentShape}, countdown: ${j}`);
+                        }
                     }
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
                 }
 
                 if (shapeCount[allShapes[0]] >= 3 && shapeCount[allShapes[1]] >= 3) {
@@ -157,7 +155,6 @@ const ThirdTest: React.FC = () => {
         setCapturing(false);
         sendToBackend(gestureOrder, images);
     };
-
     const sendToBackend = async (gestureOrder: string[], images: string[]) => {
         setLoading(true); // Включаем лоадер
         const formData = new FormData();
@@ -174,7 +171,7 @@ const ThirdTest: React.FC = () => {
             for (let i = 0; i < byteString.length; i++) {
                 ia[i] = byteString.charCodeAt(i);
             }
-            const blob = new Blob([ab], { type: mimeString });
+            const blob = new Blob([ab], {type: mimeString});
             formData.append('images', blob, `image${index}.png`);
         });
 
@@ -193,7 +190,7 @@ const ThirdTest: React.FC = () => {
             {showInstruction ? (
                 <>
                     <div className="flex justify-center">
-                        <Image src={`/gifs/fourth.gif`} alt={`pizda`} width={400} height={400} className="center" />
+                        <Image src={`/gifs/fourth.gif`} alt={`pizda`} width={400} height={400} className="center"/>
                     </div>
                     <button
                         onClick={() => setShowInstruction(false)}
@@ -205,7 +202,7 @@ const ThirdTest: React.FC = () => {
             ) : (
                 <>
                     <Webcam ref={webcamRef} screenshotFormat="image/png"
-                        className={`mx-auto mb-4 rounded-lg shadow-lg  ${shapeGestureDescription ? 'hidden' : 'block'}`} />
+                            className={`mx-auto mb-4 rounded-lg shadow-lg  ${shapeGestureDescription ? 'hidden' : 'block'}`}/>
                     {showDescription && (
                         <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
                             <p>Запомните 2 жеста, привязанные к фигурам указанного цвета. Показывайте эти жесты, когда
@@ -220,7 +217,7 @@ const ThirdTest: React.FC = () => {
                     >
                         Start
                     </button>
-                    <br />
+                    <br/>
                     <button
                         onClick={() => setShowInstruction(true)}
                         className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
@@ -231,23 +228,23 @@ const ThirdTest: React.FC = () => {
                         <div className="flex flex-col items-center mt-4">
                             <div className="flex items-center mb-4">
                                 <Image src={`/figures/${SHAPE_IMAGES[shapeGestureDescription.shape1]}`}
-                                    alt={shapeGestureDescription.shape1} width={150} height={150} />
+                                       alt={shapeGestureDescription.shape1} width={150} height={150}/>
                                 <span className="mx-2"> - </span>
                                 <Image src={`/gestures/${GESTURE_IMAGES[shapeGestureDescription.gesture1]}`}
-                                    alt={shapeGestureDescription.gesture1} width={150} height={150} />
+                                       alt={shapeGestureDescription.gesture1} width={150} height={150}/>
                             </div>
                             <div className="flex items-center">
                                 <Image src={`/figures/${SHAPE_IMAGES[shapeGestureDescription.shape2]}`}
-                                    alt={shapeGestureDescription.shape2} width={150} height={150} />
+                                       alt={shapeGestureDescription.shape2} width={150} height={150}/>
                                 <span className="mx-2"> - </span>
                                 <Image src={`/gestures/${GESTURE_IMAGES[shapeGestureDescription.gesture2]}`}
-                                    alt={shapeGestureDescription.gesture2} width={150} height={150} />
+                                       alt={shapeGestureDescription.gesture2} width={150} height={150}/>
                             </div>
                         </div>
                     )}
 
                     {currentShape && (
-                        <div style={{ fontSize: '2rem', margin: '1rem' }}>
+                        <div style={{fontSize: '2rem', margin: '1rem'}}>
                             <Image
                                 src={`/figures/${SHAPE_IMAGES[currentShape]}`}
                                 alt={currentShape}
@@ -266,7 +263,7 @@ const ThirdTest: React.FC = () => {
                         <div
                             className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
                             <Link href="test-4"
-                                className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]`}
+                                  className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]`}
                             >
                                 Next
                             </Link>

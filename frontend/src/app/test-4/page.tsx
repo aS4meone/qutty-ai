@@ -25,7 +25,7 @@ const FourthTest: React.FC = () => {
     const startCapture = async () => {
         setCapturing(true);
         setShowDescription(false);
-        setShowWebcam(false);
+        // Удалите эту строку: setShowWebcam(false);
 
         const gestures = shuffleGestures();
         setCurrentGestures(gestures);
@@ -37,33 +37,41 @@ const FourthTest: React.FC = () => {
 
         setCurrentGestureIndex(null);
         setCurrentGestures([]);
-        setShowWebcam(true);
+        // Удалите эту строку: setShowWebcam(true);
         await captureSequence(gestures);
     };
 
     const captureSequence = async (gestures: string[]) => {
         const images: string[] = [];
+        const capturedGestures: string[] = [];
+
+        setShowWebcam(true);
+
+        for (let i = 3; i > 0; i--) {
+            setPromptText(`Приготовьтесь: ${i}`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
 
         const captureGesture = async (index: number, gestureNumber: number) => {
-            setPromptText(`Покажите жест который был под номером ${gestureNumber}`);
+            setPromptText(`Покажите жест номер ${gestureNumber}`);
             if (gestureNumber == 3) {
-                setPromptText(`А теперь покажите жест который был под номером ${gestureNumber}`)
+                setPromptText(`Теперь покажите жест номер ${gestureNumber}`);
             }
             setCountdown(5);
             for (let i = 5; i > 0; i--) {
                 setCountdown(i);
+                if (webcamRef.current) {
+                    const imageSrc = webcamRef.current.getScreenshot();
+                    if (imageSrc) {
+                        images.push(imageSrc);
+                        capturedGestures.push(gestures[index]);
+                        console.log(`Captured gesture ${gestureNumber}: ${gestures[index]}, countdown: ${i}`);
+                    }
+                }
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             }
             setCountdown(null);
             setPromptText(null);
-
-            if (webcamRef.current) {
-                const imageSrc = webcamRef.current.getScreenshot();
-                if (imageSrc) {
-                    images.push(imageSrc);
-                    console.log(`Captured gesture ${gestureNumber}: ${gestures[index]}`);
-                }
-            }
         };
 
         await captureGesture(4, 5); // Gesture 5
@@ -71,11 +79,10 @@ const FourthTest: React.FC = () => {
 
         setCurrentGestureIndex(null);
         setCapturing(false);
-        sendToBackend([gestures[4], gestures[2]], images);
+        sendToBackend(capturedGestures, images);
     };
-
     const sendToBackend = async (gestures: string[], images: string[]) => {
-        setLoading(true); // Включаем лоадер
+        setLoading(true);
         const formData = new FormData();
         const storedName = localStorage.getItem("name") || "";
         formData.append('name', storedName);
@@ -109,7 +116,7 @@ const FourthTest: React.FC = () => {
             {showInstruction ? (
                 <>
                     <div className="flex justify-center">
-                        <Image src={`/gifs/second.gif`} alt={`pizda`} width={400} height={400} className="center"/>
+                        <Image src={`/gifs/second.gif`} alt={`f`} width={400} height={400} className="center"/>
                     </div>
                     <button
                         onClick={() => setShowInstruction(false)}

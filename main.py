@@ -2,7 +2,7 @@ import json
 
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
-from fastapi import FastAPI, File, UploadFile, Form, Depends, BackgroundTasks
+from fastapi import FastAPI, File, UploadFile, Form, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
@@ -28,49 +28,95 @@ async def get_all_patients(db: Session = Depends(get_db)):
     return db.query(Patient).order_by(desc(Patient.id)).all()
 
 
-# @app.post("/classify-strict")
-# async def classify_strict(
+# @app.post("/classify-strict-db")
+# async def classify_strict_db(
+#         name: str = Form(...),
+#         test_number: int = Form(...),
 #         gesture_names: str = Form(...),
 #         images: List[UploadFile] = File(...),
+#         db: Session = Depends(get_db),
 # ):
-#     return classify_images_internal(gesture_names, images, strict=True)
+#     result = classify_images_internal(gesture_names, images, strict=True)
+#     correct_count = result["correct_count"]
+#     update_patient_in_db(db, name, test_number, correct_count)
+#
+#     return {"status": "success"}
 #
 #
-# @app.post("/classify-not-strict")
-# async def classify_not_strict(
+# @app.post("/classify-not-strict-db")
+# async def classify_not_strict_db(
+#         name: str = Form(...),
+#         test_number: int = Form(...),
 #         gesture_names: str = Form(...),
 #         images: List[UploadFile] = File(...),
+#         db: Session = Depends(get_db)
 # ):
-#     return classify_images_internal(gesture_names, images, strict=False)
+#     result = classify_images_internal(gesture_names, images, strict=False)
+#     correct_count = result["correct_count"]
+#     return update_patient_in_db(db, name, test_number, correct_count)
 
 
-@app.post("/classify-strict-db")
+@app.post("/classify-strict-db-1")
 async def classify_strict_db(
-        background_tasks: BackgroundTasks,
         name: str = Form(...),
         test_number: int = Form(...),
         gesture_names: str = Form(...),
         images: List[UploadFile] = File(...),
         db: Session = Depends(get_db),
 ):
-    result = classify_images_internal(gesture_names, images, strict=True)
-    correct_count = result["correct_count"]
-    update_patient_in_db(db, name, test_number, correct_count)
+    gesture_names_list = gesture_names.split(',')
+    total_count = 0
 
+    # Ensure that the lengths of gesture_names_list and images are multiples of 3
+    if len(gesture_names_list) % 3 != 0 or len(images) % 3 != 0:
+        return {"status": "error", "message": "Gesture names and images must be in multiples of 3"}
+
+    for i in range(0, len(images), 3):
+        batch_gesture_names = gesture_names_list[i:i + 3]
+        batch_gesture_names_string = ",".join(batch_gesture_names)
+        batch_images = images[i:i + 3]
+
+        result = classify_images_internal(batch_gesture_names_string, batch_images, strict=True)
+        correct_count = result["correct_count"]
+
+        if correct_count > 0:
+            total_count += 1
+        print(total_count, "f")
+
+    update_patient_in_db(db, name, test_number, total_count)
+    print(correct_count, total_count)
     return {"status": "success"}
 
 
-@app.post("/classify-not-strict-db")
+@app.post("/classify-not-strict-db-1")
 async def classify_not_strict_db(
         name: str = Form(...),
         test_number: int = Form(...),
         gesture_names: str = Form(...),
         images: List[UploadFile] = File(...),
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
 ):
-    result = classify_images_internal(gesture_names, images, strict=False)
-    correct_count = result["correct_count"]
-    return update_patient_in_db(db, name, test_number, correct_count)
+    gesture_names_list = gesture_names.split(',')
+    total_count = 0
+
+    # Ensure that the lengths of gesture_names_list and images are multiples of 3
+    if len(gesture_names_list) % 5 != 0 or len(images) % 5 != 0:
+        return {"status": "error", "message": "Gesture names and images must be in multiples of 3"}
+
+    for i in range(0, len(images), 5):
+        batch_gesture_names = gesture_names_list[i:i + 5]
+        batch_gesture_names_string = ",".join(batch_gesture_names)
+        batch_images = images[i:i + 5]
+
+        result = classify_images_internal(batch_gesture_names_string, batch_images, strict=True)
+        correct_count = result["correct_count"]
+
+        if correct_count > 0:
+            total_count += 1
+
+    update_patient_in_db(db, name, test_number, total_count)
+    print(correct_count, total_count)
+    return {"status": "success"}
 
 
 @app.post("/diagnosis")

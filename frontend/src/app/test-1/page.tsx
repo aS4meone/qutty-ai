@@ -24,28 +24,29 @@ const FirstTest: React.FC = () => {
     const captureSequence = async () => {
         const gestures = shuffleGestures();
         const images: string[] = [];
+        const gestureMapping: string[] = [];
 
         for (const gesture of gestures) {
             setCurrentGesture(gesture);
 
             for (let i = 3; i > 0; i--) {
                 setCountdown(i);
+                if (webcamRef.current) {
+                    const imageSrc = webcamRef.current.getScreenshot();
+                    if (imageSrc) {
+                        images.push(imageSrc);
+                        gestureMapping.push(gesture);
+                        console.log(`Captured ${gesture} at ${i} seconds`);
+                    }
+                }
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             }
 
             setCountdown(null);
-
-            if (webcamRef.current) {
-                const imageSrc = webcamRef.current.getScreenshot();
-                if (imageSrc) {
-                    images.push(imageSrc);
-                    console.log(`Captured ${gesture}`);
-                }
-            }
         }
         setCurrentGesture(null);
         setCapturing(false);
-        sendToBackend(gestures, images);
+        sendToBackend(gestureMapping, images);
     };
 
     const sendToBackend = async (gestures: string[], images: string[]) => {
@@ -68,7 +69,7 @@ const FirstTest: React.FC = () => {
             formData.append('images', blob, `image${index}.png`);
         });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-strict-db`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-strict-db-1`, {
             method: 'POST',
             body: formData,
         });

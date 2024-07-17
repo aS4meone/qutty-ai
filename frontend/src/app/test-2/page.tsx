@@ -19,7 +19,7 @@ const getRandomGesture = () => {
 
 const generateShapeSequence = (selectedShape: string) => {
     const sequence: string[] = [];
-    const addRandomShapes = (count : any) => {
+    const addRandomShapes = (count: any) => {
         for (let i = 0; i < count; i++) {
             let randomShape;
             do {
@@ -59,7 +59,6 @@ const SecondTest: React.FC = () => {
         setShowDescription(false);
         captureSequence({shape: selectedShape, gesture: selectedGesture});
     };
-
     const captureSequence = async (shapeGesture: { shape: string, gesture: string }) => {
         const images: string[] = [];
         const gestureOrder: string[] = [];
@@ -80,19 +79,17 @@ const SecondTest: React.FC = () => {
 
             if (currentShape === shapeGesture.shape) {
                 targetShapeCount++;
-                for (let j = 2; j > 0; j--) {
-                    setCountdown(j);
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                }
-                setCountdown(null);
-
-                if (webcamRef.current) {
-                    const imageSrc = webcamRef.current.getScreenshot();
-                    if (imageSrc) {
-                        images.push(imageSrc);
-                        gestureOrder.push(shapeGesture.gesture);
-                        console.log(`Captured gesture for shape ${currentShape}`);
+                for (let j = 2; j >= 0; j--) {
+                    setCountdown(j === 0 ? null : j);
+                    if (webcamRef.current) {
+                        const imageSrc = webcamRef.current.getScreenshot();
+                        if (imageSrc) {
+                            images.push(imageSrc);
+                            gestureOrder.push(shapeGesture.gesture);
+                            console.log(`Captured gesture for shape ${currentShape}, countdown: ${j}`);
+                        }
                     }
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
                 }
 
                 if (targetShapeCount === 3) {
@@ -128,7 +125,7 @@ const SecondTest: React.FC = () => {
             formData.append('images', blob, `image${index}.png`);
         });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-strict-db`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-strict-db-1`, {
             method: 'POST',
             body: formData,
         });
