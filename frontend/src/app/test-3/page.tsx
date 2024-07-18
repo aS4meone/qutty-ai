@@ -175,7 +175,7 @@ const ThirdTest: React.FC = () => {
             formData.append('images', blob, `image${index}.png`);
         });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-strict-db`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-strict-db-1`, {
             method: 'POST',
             body: formData,
         });

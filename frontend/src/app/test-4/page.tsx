@@ -101,7 +101,7 @@ const FourthTest: React.FC = () => {
             formData.append('images', blob, `image${index}.png`);
         });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-not-strict-db`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classify-not-strict-db-1`, {
             method: 'POST',
             body: formData,
         });
