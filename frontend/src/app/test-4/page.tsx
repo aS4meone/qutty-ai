@@ -25,7 +25,7 @@ const FourthTest: React.FC = () => {
     const startCapture = async () => {
         setCapturing(true);
         setShowDescription(false);
-        // Удалите эту строку: setShowWebcam(false);
+        setShowWebcam(false);
 
         const gestures = shuffleGestures();
         setCurrentGestures(gestures);
@@ -37,7 +37,7 @@ const FourthTest: React.FC = () => {
 
         setCurrentGestureIndex(null);
         setCurrentGestures([]);
-        // Удалите эту строку: setShowWebcam(true);
+        setShowWebcam(true);
         await captureSequence(gestures);
     };
 
@@ -156,8 +156,8 @@ const FourthTest: React.FC = () => {
                             <Image
                                 src={`/gestures/${GESTURE_IMAGES[currentGestures[currentGestureIndex]]}`}
                                 alt={currentGestures[currentGestureIndex]}
-                                width={150}
-                                height={150}
+                                width={250}
+                                height={250}
                                 className="mx-auto"
                             />
                             <h2>Жест {currentGestureIndex + 1}</h2>

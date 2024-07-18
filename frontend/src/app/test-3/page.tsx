@@ -228,17 +228,17 @@ const ThirdTest: React.FC = () => {
                         <div className="flex flex-col items-center mt-4">
                             <div className="flex items-center mb-4">
                                 <Image src={`/figures/${SHAPE_IMAGES[shapeGestureDescription.shape1]}`}
-                                       alt={shapeGestureDescription.shape1} width={150} height={150}/>
+                                       alt={shapeGestureDescription.shape1} width={200} height={200}/>
                                 <span className="mx-2"> - </span>
                                 <Image src={`/gestures/${GESTURE_IMAGES[shapeGestureDescription.gesture1]}`}
-                                       alt={shapeGestureDescription.gesture1} width={150} height={150}/>
+                                       alt={shapeGestureDescription.gesture1} width={200} height={200}/>
                             </div>
                             <div className="flex items-center">
                                 <Image src={`/figures/${SHAPE_IMAGES[shapeGestureDescription.shape2]}`}
-                                       alt={shapeGestureDescription.shape2} width={150} height={150}/>
+                                       alt={shapeGestureDescription.shape2} width={200} height={200}/>
                                 <span className="mx-2"> - </span>
                                 <Image src={`/gestures/${GESTURE_IMAGES[shapeGestureDescription.gesture2]}`}
-                                       alt={shapeGestureDescription.gesture2} width={150} height={150}/>
+                                       alt={shapeGestureDescription.gesture2} width={200} height={200}/>
                             </div>
                         </div>
                     )}
@@ -248,8 +248,8 @@ const ThirdTest: React.FC = () => {
                             <Image
                                 src={`/figures/${SHAPE_IMAGES[currentShape]}`}
                                 alt={currentShape}
-                                width={150}
-                                height={150}
+                                width={200}
+                                height={200}
                                 className="mx-auto"
                             />
                         </div>

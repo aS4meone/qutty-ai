@@ -95,7 +95,7 @@ const FirstTest: React.FC = () => {
                 </>
             ) : (
                 <>
-                    <Webcam ref={webcamRef} screenshotFormat="image/png" className="mx-auto mb-4 rounded-lg shadow-lg"/>
+                    <Webcam ref={webcamRef} screenshotFormat="image/png" className="mx-auto rounded-lg shadow-lg"/>
                     {showDescription && (
                         <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
                             <p>Повторяйте жесты, которые вы увидите на экране.</p>
@@ -116,9 +116,9 @@ const FirstTest: React.FC = () => {
                         Инструкция
                     </button>
                     {currentGesture && (
-                        <div className="text-2xl mt-4 text-gray-800">
-                            <Image src={`/gestures/${GESTURE_IMAGES[currentGesture]}`} alt={currentGesture} width="150"
-                                   height="150" className="mx-auto"/>
+                        <div className="text-2xl text-gray-800">
+                            <Image src={`/gestures/${GESTURE_IMAGES[currentGesture]}`} alt={currentGesture} width="200"
+                                   height="200" className="mx-auto"/>
                         </div>
                     )}
                     {countdown !== null && (

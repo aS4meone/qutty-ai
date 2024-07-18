@@ -180,10 +180,10 @@ const SecondTest: React.FC = () => {
                         <div className="flex flex-col items-center mt-4">
                             <div className="flex items-center">
                                 <Image src={`/figures/${SHAPE_IMAGES[shapeGesture.shape]}`}
-                                       alt={shapeGesture.shape} width={150} height={150}/>
+                                       alt={shapeGesture.shape} width={200} height={200}/>
                                 <span className="mx-2"> - </span>
                                 <Image src={`/gestures/${GESTURE_IMAGES[shapeGesture.gesture]}`}
-                                       alt={shapeGesture.gesture} width={150} height={150}/>
+                                       alt={shapeGesture.gesture} width={200} height={200}/>
                             </div>
                         </div>
                     )}
