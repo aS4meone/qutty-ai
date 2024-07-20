@@ -156,34 +156,39 @@ const SecondTest: React.FC = () => {
                             className={`mx-auto mb-4 rounded-lg shadow-lg  ${shapeGesture ? 'hidden' : 'block'}`}/>
                     {showDescription && (
                         <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
-                            <p>Запомните жест, привязанный к фигуре указанного цвета. Показывайте этот жест, когда вы
-                                увидите
-                                соответствующую фигуру на экране.</p>
+                            <p>Запомните фигуру и жест за 5 секунд. Затем на экране будут появляться разные
+                                фигуры. <br/> Ваша задача — показать жест, когда появится нужная фигура.</p>
+                            <p className="font-bold">Жест можно показывать любой рукой.</p>
                         </div>
                     )}
-                    <button
-                        onClick={startCapture}
-                        disabled={capturing}
-                        className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md ${capturing ? 'hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-                    >
-                        Start
-                    </button>
-                    <br/>
-                    <button
-                        onClick={() => setShowInstruction(true)}
-                        className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-                    >
-                        Инструкция
-                    </button>
+                    <div className="flex justify-center mt-3 space-x-3 max-w-xl mx-auto">
+                        <button
+                            onClick={startCapture}
+                            disabled={capturing}
+                            className={`px-16 py-2 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+                        >
+                            Start
+                        </button>
+                        <button
+                            onClick={() => setShowInstruction(true)}
+                            className={`px-8 py-2 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-white text-black'}`}
+                        >
+                            Инструкция
+                        </button>
+                    </div>
 
                     {shapeGesture && (
                         <div className="flex flex-col items-center mt-4">
                             <div className="flex items-center">
                                 <Image src={`/figures/${SHAPE_IMAGES[shapeGesture.shape]}`}
-                                       alt={shapeGesture.shape} width={200} height={200}/>
+                                       alt={shapeGesture.shape} width={200} height={200}
+                                       className="mx-auto w-[200px] h-[200px] object-contain"
+                                />
                                 <span className="mx-2"> - </span>
                                 <Image src={`/gestures/${GESTURE_IMAGES[shapeGesture.gesture]}`}
-                                       alt={shapeGesture.gesture} width={200} height={200}/>
+                                       alt={shapeGesture.gesture} width={200} height={200}
+                                       className="mx-auto w-[200px] h-[200px] object-contain"
+                                />
                             </div>
                         </div>
                     )}
@@ -193,9 +198,9 @@ const SecondTest: React.FC = () => {
                             <Image
                                 src={`/figures/${SHAPE_IMAGES[currentShape]}`}
                                 alt={currentShape}
-                                width={150}
-                                height={150}
-                                className="mx-auto"
+                                width={200}
+                                height={200}
+                                className="mx-auto w-[200px] h-[200px] object-contain"
                             />
                         </div>
                     )}

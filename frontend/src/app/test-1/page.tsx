@@ -96,41 +96,54 @@ const FirstTest: React.FC = () => {
             ) : (
                 <>
                     <Webcam ref={webcamRef} screenshotFormat="image/png" className="mx-auto rounded-lg shadow-lg"/>
+
                     {showDescription && (
-                        <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
+                        <div className="text-xl mx-auto mt-4 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
                             <p>Повторяйте жесты, которые вы увидите на экране.</p>
+                            <p className="font-bold">Жесты можно показывать любой рукой.</p>
                         </div>
                     )}
-                    <button
-                        onClick={startCapture}
-                        disabled={capturing}
-                        className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-                    >
-                        Start
-                    </button>
-                    <br/>
-                    <button
-                        onClick={() => setShowInstruction(true)}
-                        className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-                    >
-                        Инструкция
-                    </button>
+
+                    <div className="flex justify-center mt-3 space-x-3 max-w-xl mx-auto">
+                        <button
+                            onClick={startCapture}
+                            disabled={capturing}
+                            className={`px-16 py-2 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+                        >
+                            Start
+                        </button>
+                        <button
+                            onClick={() => setShowInstruction(true)}
+                            className={`px-8 py-2 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-white text-black'}`}
+                        >
+                            Инструкция
+                        </button>
+                    </div>
+
                     {currentGesture && (
                         <div className="text-2xl text-gray-800">
-                            <Image src={`/gestures/${GESTURE_IMAGES[currentGesture]}`} alt={currentGesture} width="200"
-                                   height="200" className="mx-auto"/>
+                            <Image
+                                src={`/gestures/${GESTURE_IMAGES[currentGesture]}`}
+                                alt={currentGesture}
+                                width="200"
+                                height="200"
+                                className="mx-auto w-[200px] h-[200px] object-contain"
+                            />
                         </div>
                     )}
+
                     {countdown !== null && (
                         <div className="text-4xl mt-6 text-gray-800">
                             Отсчет: {countdown}
                         </div>
                     )}
+
                     {loading && (
                         <div className="text-4xl mt-6 text-gray-800">
                             <p>Loading...</p>
                         </div>
                     )}
+
                     {results && (
                         <div className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
                             <Link href="test-2"
@@ -142,6 +155,7 @@ const FirstTest: React.FC = () => {
                         </div>
                     )}
                 </>
+
             )}
         </div>
     );

@@ -137,28 +137,29 @@ const FourthTest: React.FC = () => {
                             <p>Запомните порядок жестов. Позже покажите жест по порядковому номеру</p>
                         </div>
                     )}
-                    <button
-                        onClick={startCapture}
-                        disabled={capturing}
-                        className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md ${capturing ? 'hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-                    >
-                        Start
-                    </button>
-                    <br/>
-                    <button
-                        onClick={() => setShowInstruction(true)}
-                        className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-                    >
-                        Инструкция
-                    </button>
+                    <div className="flex justify-center mt-3 space-x-3 max-w-xl mx-auto">
+                        <button
+                            onClick={startCapture}
+                            disabled={capturing}
+                            className={`px-16 py-2 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+                        >
+                            Start
+                        </button>
+                        <button
+                            onClick={() => setShowInstruction(true)}
+                            className={`px-8 py-2 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-white text-black'}`}
+                        >
+                            Инструкция
+                        </button>
+                    </div>
                     {currentGestureIndex !== null && currentGestures.length > 0 && (
                         <div className="text-4xl font-bold mt-6 text-gray-800">
                             <Image
                                 src={`/gestures/${GESTURE_IMAGES[currentGestures[currentGestureIndex]]}`}
                                 alt={currentGestures[currentGestureIndex]}
-                                width={250}
-                                height={250}
-                                className="mx-auto"
+                                width={200}
+                                height={200}
+                                className="mx-auto w-[200px] h-[200px] object-contain"
                             />
                             <h2>Жест {currentGestureIndex + 1}</h2>
                         </div>

@@ -205,40 +205,50 @@ const ThirdTest: React.FC = () => {
                             className={`mx-auto mb-4 rounded-lg shadow-lg  ${shapeGestureDescription ? 'hidden' : 'block'}`}/>
                     {showDescription && (
                         <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
-                            <p>Запомните 2 жеста, привязанные к фигурам указанного цвета. Показывайте эти жесты, когда
-                                вы
-                                увидите соотвестующие фигуры на экране.</p>
+                            <p>Запомните две фигуры и жесты за 5 секунд. Затем на экране будут появляться разные
+                                фигуры. <br/> Ваша задача — показать нужный жест, когда появится соответствующая фигура.
+                            </p>
+                            <p className="font-bold">Жесты можно показывать любой рукой.</p>
                         </div>
                     )}
-                    <button
-                        onClick={startCapture}
-                        disabled={capturing}
-                        className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md ${capturing ? 'hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-                    >
-                        Start
-                    </button>
-                    <br/>
-                    <button
-                        onClick={() => setShowInstruction(true)}
-                        className={`px-4 py-2 mt-3 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
-                    >
-                        Инструкция
-                    </button>
+                    <div className="flex justify-center mt-3 space-x-3 max-w-xl mx-auto">
+                        <button
+                            onClick={startCapture}
+                            disabled={capturing}
+                            className={`px-16 py-2 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}
+                        >
+                            Start
+                        </button>
+                        <button
+                            onClick={() => setShowInstruction(true)}
+                            className={`px-8 py-2 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed hidden' : 'bg-white text-black'}`}
+                        >
+                            Инструкция
+                        </button>
+                    </div>
                     {shapeGestureDescription && (
                         <div className="flex flex-col items-center mt-4">
                             <div className="flex items-center mb-4">
                                 <Image src={`/figures/${SHAPE_IMAGES[shapeGestureDescription.shape1]}`}
-                                       alt={shapeGestureDescription.shape1} width={200} height={200}/>
+                                       alt={shapeGestureDescription.shape1} width={200} height={200}
+                                       className="mx-auto w-[200px] h-[200px] object-contain"
+                                />
                                 <span className="mx-2"> - </span>
                                 <Image src={`/gestures/${GESTURE_IMAGES[shapeGestureDescription.gesture1]}`}
-                                       alt={shapeGestureDescription.gesture1} width={200} height={200}/>
+                                       alt={shapeGestureDescription.gesture1} width={200} height={200}
+                                       className="mx-auto w-[200px] h-[200px] object-contain"
+                                />
                             </div>
                             <div className="flex items-center">
                                 <Image src={`/figures/${SHAPE_IMAGES[shapeGestureDescription.shape2]}`}
-                                       alt={shapeGestureDescription.shape2} width={200} height={200}/>
+                                       alt={shapeGestureDescription.shape2} width={200} height={200}
+                                       className="mx-auto w-[200px] h-[200px] object-contain"
+                                />
                                 <span className="mx-2"> - </span>
                                 <Image src={`/gestures/${GESTURE_IMAGES[shapeGestureDescription.gesture2]}`}
-                                       alt={shapeGestureDescription.gesture2} width={200} height={200}/>
+                                       alt={shapeGestureDescription.gesture2} width={200} height={200}
+                                       className="mx-auto w-[200px] h-[200px] object-contain"
+                                />
                             </div>
                         </div>
                     )}
@@ -250,7 +260,8 @@ const ThirdTest: React.FC = () => {
                                 alt={currentShape}
                                 width={200}
                                 height={200}
-                                className="mx-auto"
+                                className="mx-auto w-[200px] h-[200px] object-contain"
+
                             />
                         </div>
                     )}
