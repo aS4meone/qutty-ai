@@ -190,7 +190,7 @@ const ThirdTest: React.FC = () => {
             {showInstruction ? (
                 <>
                     <div className="flex justify-center">
-                        <Image src={`/gifs/fourth.gif`} alt={`pizda`} width={400} height={400} className="center"/>
+                        <Image src={`/gifs/fourth.gif`} alt={`fsasfsa`} width={400} height={400} className="center"/>
                     </div>
                     <button
                         onClick={() => setShowInstruction(false)}
