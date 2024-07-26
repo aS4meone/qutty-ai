@@ -78,7 +78,6 @@ const FirstTest: React.FC = () => {
         setResults(result);
         setLoading(false);
     };
-
     return (
         <div className="text-center pt-5 min-h-screen">
             {showInstruction ? (
@@ -95,7 +94,7 @@ const FirstTest: React.FC = () => {
                 </>
             ) : (
                 <>
-                    <Webcam ref={webcamRef} screenshotFormat="image/png" className="mx-auto rounded-lg shadow-lg"/>
+                    <Webcam ref={webcamRef} screenshotFormat="image/png" className="mx-auto rounded-lg shadow-lg max-w-xl"/>
 
                     {showDescription && (
                         <div className="text-xl mx-auto mt-4 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
