@@ -95,7 +95,7 @@ const FirstTest: React.FC = () => {
             ) : (
                 <>
                     <Webcam ref={webcamRef} screenshotFormat="image/png"
-                            className="-scale-x-100 mx-auto rounded-lg shadow-lg lg:max-w-xl max-w-xs"/>
+                            className="-scale-x-100 mx-auto rounded-lg shadow-lg lg:max-w-xl max-w-60"/>
 
                     {showDescription && (
                         <div className="text-xl mx-auto mt-4 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
