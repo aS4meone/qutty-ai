@@ -129,7 +129,7 @@ const FourthTest: React.FC = () => {
                 <>
                     {showWebcam && (
                         <Webcam ref={webcamRef} screenshotFormat="image/png"
-                                className="mx-auto mb-4 rounded-lg shadow-lg max-w-xl"/>
+                                className="mx-auto mb-4 rounded-lg shadow-lg lg:max-w-xl max-w-60 -scale-x-100"/>
                     )}
                     {showDescription && (
                         <div

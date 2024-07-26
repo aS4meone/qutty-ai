@@ -153,7 +153,7 @@ const SecondTest: React.FC = () => {
             ) : (
                 <>
                     <Webcam ref={webcamRef} screenshotFormat="image/png"
-                            className={`mx-auto mb-4 rounded-lg shadow-lg max-w-xl ${shapeGesture ? 'hidden' : 'block'}`}/>
+                            className={`mx-auto mb-4 rounded-lg shadow-lg lg:max-w-xl max-w-60 -scale-x-100 ${shapeGesture ? 'hidden' : 'block'}`}/>
                     {showDescription && (
                         <div className="text-xl mx-auto p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl">
                             <p>Запомните фигуру и жест за 5 секунд. Затем на экране будут появляться разные
