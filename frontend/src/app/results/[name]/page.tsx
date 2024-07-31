@@ -35,7 +35,7 @@ const RecommendationsPage = () => {
   }, [name]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-800">Рекомендации</h1>
