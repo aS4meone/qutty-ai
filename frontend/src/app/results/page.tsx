@@ -37,7 +37,7 @@ export default function Results() {
         <div>
             <header className="px-4 lg:px-6 h-14 flex items-center">
                 <Link href="/" className="flex items-center justify-center font-extrabold" prefetch={false}>
-                    <span>Dementia Testing</span>
+                    <span>ai.qutty.net</span>
                 </Link>
                 <nav className="ml-auto flex gap-4 sm:gap-6">
                     <Link href="/" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>

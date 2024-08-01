@@ -13,7 +13,7 @@ export default function MainPage() {
         <div className="flex flex-col min-h-screen text-[hsl(339_20%_20%)]">
             <header className="px-4 lg:px-6 h-14 flex items-center">
                 <Link href="/" className="flex items-center justify-center font-extrabold" prefetch={false}>
-                    <span>Dementia Testing</span>
+                    <span>ai.qutty.net</span>
                 </Link>
                 <nav className="ml-auto flex gap-4 sm:gap-6">
                     <Link href="/" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
@@ -48,15 +48,7 @@ export default function MainPage() {
             </main>
             <footer
                 className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-[hsl(210_40%_80%)]">
-                <p className="text-xs text-[hsl(210_22%_22%)]">&copy; 2024 Dementia Testing. All rights reserved.</p>
-                <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-                    <Link href="#" className="text-xs hover:underline underline-offset-4" prefetch={false}>
-                        Privacy
-                    </Link>
-                    <Link href="#" className="text-xs hover:underline underline-offset-4" prefetch={false}>
-                        Terms of Service
-                    </Link>
-                </nav>
+                <p className="text-xs text-[hsl(210_22%_22%)]">All rights reserved. &copy; ai.qutty.net 2024</p>
             </footer>
             {isModalOpen && <TestModal onClose={closeModal}/>}
         </div>

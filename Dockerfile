@@ -7,4 +7,4 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-CMD uvicorn main:app --host 0.0.0.0 --port 8872
+CMD ["gunicorn", "-w", "5", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8872", "main:app"]
