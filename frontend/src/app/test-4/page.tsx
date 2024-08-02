@@ -1,9 +1,9 @@
 'use client';
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import Link from "next/link";
 import Image from "next/image";
-import {GESTURE_IMAGES, GESTURES} from "@/lib/gestures";
+import { GESTURE_IMAGES, GESTURES } from "@/lib/gestures";
 
 const shuffleGestures = (): string[] => {
     return GESTURES.sort(() => 0.5 - Math.random()).slice(0, 5);
@@ -21,6 +21,14 @@ const FourthTest: React.FC = () => {
     const [promptText, setPromptText] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [showInstruction, setShowInstruction] = useState(false);
+    const [resultUrl, setResultUrl] = useState("");
+
+    useEffect(() => {
+        const id = localStorage.getItem("id");
+        if (id) {
+            setResultUrl(`/results/${id}`);
+        }
+    }, []);
 
     const startCapture = async () => {
         setCapturing(true);
@@ -81,11 +89,12 @@ const FourthTest: React.FC = () => {
         setCapturing(false);
         sendToBackend(capturedGestures, images);
     };
+
     const sendToBackend = async (gestures: string[], images: string[]) => {
         setLoading(true);
         const formData = new FormData();
-        const storedName = localStorage.getItem("name") || "";
-        formData.append('name', storedName);
+        const storedId = localStorage.getItem("id") || "";
+        formData.append('id', storedId);
         formData.append("test_number", "4");
         formData.append('gesture_names', gestures.join(','));
 
@@ -97,7 +106,7 @@ const FourthTest: React.FC = () => {
             for (let i = 0; i < byteString.length; i++) {
                 ia[i] = byteString.charCodeAt(i);
             }
-            const blob = new Blob([ab], {type: mimeString});
+            const blob = new Blob([ab], { type: mimeString });
             formData.append('images', blob, `image${index}.png`);
         });
 
@@ -116,7 +125,7 @@ const FourthTest: React.FC = () => {
             {showInstruction ? (
                 <>
                     <div className="flex justify-center">
-                        <Image src={`/gifs/second.gif`} alt={`f`} width={400} height={400} className="center"/>
+                        <Image src={`/gifs/second.gif`} alt={`f`} width={400} height={400} className="center" />
                     </div>
                     <button
                         onClick={() => setShowInstruction(false)}
@@ -129,7 +138,7 @@ const FourthTest: React.FC = () => {
                 <>
                     {showWebcam && (
                         <Webcam ref={webcamRef} screenshotFormat="image/png"
-                                className="mx-auto mb-4 rounded-lg shadow-lg lg:max-w-xl max-w-60 -scale-x-100"/>
+                            className="mx-auto mb-4 rounded-lg shadow-lg lg:max-w-xl max-w-60 -scale-x-100" />
                     )}
                     {showDescription && (
                         <div
@@ -176,18 +185,17 @@ const FourthTest: React.FC = () => {
                     )}
                     {loading && (
                         <div className="text-4xl mt-6 text-gray-800">
-                            <p>Loading...</p>
+                            <p>Отлично! Все тесты пройдены. <br />Загрузка... <br />Обычно загрузка занимает не более 30 секунд.</p>
                         </div>
                     )}
                     {results && (
                         <div className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
-                            <Link href="results"
-                                  className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]`}
+                            <Link href={resultUrl}
+                                className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]`}
                             >
-                                Results
+                                Результаты
                             </Link>
-                            <p className="font-semibold mt-4">Результаты сохранены. Вы можете посмотреть их
-                                нажав кнопку Выше</p>
+                            <p className="font-semibold mt-4">Результаты сохранены. Вы можете посмотреть их нажав кнопку Выше</p>
                         </div>
                     )}
                 </>

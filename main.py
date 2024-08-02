@@ -1,10 +1,11 @@
 import json
 
 from sqlalchemy import desc
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from fastapi import FastAPI, File, UploadFile, Form, Depends
+from fastapi import FastAPI, File, UploadFile, Form, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
+from typing import List, Optional
 
 from app.dependencies.database.database import get_db
 from app.models.patient_model import Patient
@@ -28,37 +29,9 @@ async def get_all_patients(db: Session = Depends(get_db)):
     return db.query(Patient).order_by(desc(Patient.id)).all()
 
 
-# @app.post("/classify-strict-db")
-# async def classify_strict_db(
-#         name: str = Form(...),
-#         test_number: int = Form(...),
-#         gesture_names: str = Form(...),
-#         images: List[UploadFile] = File(...),
-#         db: Session = Depends(get_db),
-# ):
-#     result = classify_images_internal(gesture_names, images, strict=True)
-#     correct_count = result["correct_count"]
-#     update_patient_in_db(db, name, test_number, correct_count)
-#
-#     return {"status": "success"}
-#
-#
-# @app.post("/classify-not-strict-db")
-# async def classify_not_strict_db(
-#         name: str = Form(...),
-#         test_number: int = Form(...),
-#         gesture_names: str = Form(...),
-#         images: List[UploadFile] = File(...),
-#         db: Session = Depends(get_db)
-# ):
-#     result = classify_images_internal(gesture_names, images, strict=False)
-#     correct_count = result["correct_count"]
-#     return update_patient_in_db(db, name, test_number, correct_count)
-
-
 @app.post("/classify-strict-db-1")
 async def classify_strict_db(
-        name: str = Form(...),
+        id: int = Form(...),
         test_number: int = Form(...),
         gesture_names: str = Form(...),
         images: List[UploadFile] = File(...),
@@ -67,7 +40,6 @@ async def classify_strict_db(
     gesture_names_list = gesture_names.split(',')
     total_count = 0
 
-    # Ensure that the lengths of gesture_names_list and images are multiples of 3
     if len(gesture_names_list) % 3 != 0 or len(images) % 3 != 0:
         return {"status": "error", "message": "Gesture names and images must be in multiples of 3"}
 
@@ -81,16 +53,14 @@ async def classify_strict_db(
 
         if correct_count > 0:
             total_count += 1
-        print(total_count, "f")
 
-    update_patient_in_db(db, name, test_number, total_count)
-    print(correct_count, total_count)
+    update_patient_in_db(db, id, test_number, total_count)
     return {"status": "success"}
 
 
 @app.post("/classify-not-strict-db-1")
 async def classify_not_strict_db(
-        name: str = Form(...),
+        id: int = Form(...),
         test_number: int = Form(...),
         gesture_names: str = Form(...),
         images: List[UploadFile] = File(...),
@@ -114,31 +84,24 @@ async def classify_not_strict_db(
         if correct_count > 0:
             total_count += 1
 
-    update_patient_in_db(db, name, test_number, total_count)
-    print(correct_count, total_count)
+    update_patient_in_db(db, id, test_number, total_count)
     return {"status": "success"}
 
 
 @app.post("/diagnosis")
-async def update_diagnosis(
+async def create_diagnosis(
         name: str = Form(...),
-        moca: str = Form(...),
         gender: str = Form(...),
         age: str = Form(...),
+        moca: Optional[str] = Form(None),
         db: Session = Depends(get_db)
 ):
-    patient = db.query(Patient).filter(Patient.name == name).first()
-
-    if patient:
-        patient.moca = moca
-        patient.gender = gender
-        patient.age = age
-    else:
-        patient = Patient(
+    try:
+        new_patient = Patient(
             name=name,
-            moca=moca,
             gender=gender,
             age=age,
+            moca=moca,
             first_test=None,
             second_test=None,
             third_test=None,
@@ -147,23 +110,33 @@ async def update_diagnosis(
             sixth_test=None,
             to_remember=None
         )
-        db.add(patient)
+        db.add(new_patient)
+        db.commit()
+        db.refresh(new_patient)
 
-    db.commit()
-    return {"name": name, "moca": moca, "gender": gender, "age": age}
+        return {
+            "id": new_patient.id,
+            "name": name,
+            "gender": gender,
+            "age": age,
+            "moca": moca
+        }
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@app.get("/results/{name}")
-def get_results(name: str, db: Session = Depends(get_db)):
-    patient = db.query(Patient).filter(Patient.name == name).first()
+@app.get("/results/{id}")
+def get_results(id: int, db: Session = Depends(get_db)):
+    patient = db.query(Patient).filter(Patient.id == id).first()
     diagnosis = ""
     if not patient:
         return "Пациент не найден"
 
     if patient:
-        res = patient.first_test + patient.second_test + patient.third_test + patient.fourth_test
+        test_scores = [patient.first_test, patient.second_test, patient.third_test, patient.fourth_test]
+        res = sum(score or 0 for score in test_scores)
 
-        # Возрастные корректировки
         if 50 <= int(patient.age) <= 55:
             res -= 1
         elif 56 <= int(patient.age) <= 60:
@@ -188,18 +161,17 @@ def get_results(name: str, db: Session = Depends(get_db)):
 
     if patient.recommendations:
         return [{
-            "name": name,
+            "name": patient.name,
             "age": patient.age,
             "predicted_diagnosis": diagnosis,
         },
             json.loads(patient.recommendations)
         ]
-    print(diagnosis, patient.age)
     recommendations = generate_recommendations(diagnosis, patient.age)
     patient.recommendations = recommendations
     db.commit()
     return [{
-        "name": name,
+        "name": patient.name,
         "age": patient.age,
         "predicted_diagnosis": diagnosis,
     },

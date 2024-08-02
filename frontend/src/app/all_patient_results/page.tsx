@@ -97,7 +97,7 @@ export default function Results() {
                                 <td className="px-6 py-4 whitespace-nowrap text-center">{item.third_test}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">{item.fourth_test}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <Link href={`/results/${item.name}`} prefetch={false}>
+                                    <Link href={`/results/${item.id}`} prefetch={false}>
                                     <span className="text-blue-600 hover:text-blue-800 cursor-pointer">
                                         <FaExternalLinkAlt size={20}/>
                                     </span>

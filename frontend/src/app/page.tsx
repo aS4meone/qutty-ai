@@ -15,32 +15,24 @@ export default function MainPage() {
                 <Link href="/" className="flex items-center justify-center font-extrabold" prefetch={false}>
                     <span>ai.qutty.net</span>
                 </Link>
-                <nav className="ml-auto flex gap-4 sm:gap-6">
-                    <Link href="/" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
-                        Home
-                    </Link>
-                    <Link href="/results" className="text-sm font-medium hover:underline underline-offset-4"
-                          prefetch={false}>
-                        Results
-                    </Link>
-                </nav>
             </header>
             <main className="flex-1 flex items-center justify-center">
                 <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
                     <div className="container mx-auto px-4 md:px-6 text-center">
                         <div className="space-y-4">
                             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                                Dementia Testing Made Easy <br/>with Qutty
+                                Проверка когнитивных функций - это просто <br/>вместе с Qutty
                             </h1>
                             <p className="mx-auto max-w-[700px] text-[hsl(210_22%_22%)] md:text-xl">
-                                Our online dementia assessment helps you identify potential cognitive issues faster and
-                                earlier. Get started with a simple test today.
+                                Наше онлайн-тестирование поможет вам быстрее и раньше выявить потенциальные
+                                когнитивные проблемы
+                                раньше. brНачните с простого теста уже сегодня.
                             </p>
                             <button
                                 onClick={openModal}
                                 className="inline-flex h-10 items-center justify-center rounded-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)] px-8 text-sm font-medium shadow transition-colors hover:bg-[hsl(308_56%_75%)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(210_40%_60%)] disabled:pointer-events-none disabled:opacity-50 lg:w-1/4 md:w-1/2"
                             >
-                                Start Test
+                                Начать тест
                             </button>
                         </div>
                     </div>

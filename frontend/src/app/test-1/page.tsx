@@ -52,8 +52,8 @@ const FirstTest: React.FC = () => {
     const sendToBackend = async (gestures: string[], images: string[]) => {
         setLoading(true);
         const formData = new FormData();
-        const storedName = localStorage.getItem("name") || "";
-        formData.append('name', storedName);
+        const storedId = localStorage.getItem("id") || "";
+        formData.append('id', storedId);
         formData.append("test_number", "1");
         formData.append('gesture_names', gestures.join(','));
 
@@ -139,8 +139,8 @@ const FirstTest: React.FC = () => {
                     )}
 
                     {loading && (
-                        <div className="text-4xl mt-6 text-gray-800">
-                            <p>Loading...</p>
+                        <div className="text-xl mt-6 text-gray-800">
+                            <p>Вы справились! Отправляем ваши результаты на сервер... И вы сможете перейти к следующему тесту. <br/>Загрузка... <br/>Обычно загрузка занимает не более 30 секунд.</p>
                         </div>
                     )}
 
@@ -148,7 +148,7 @@ const FirstTest: React.FC = () => {
                         <div className="results mt-6 p-4 bg-white rounded-lg shadow-md text-gray-700 max-w-xl mx-auto">
                             <Link href="test-2"
                                   className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md ${capturing ? 'bg-gray-400 cursor-not-allowed' : 'bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]'}`}>
-                                Next
+                                Далее
                             </Link>
                             <p className="font-semibold mt-4">Результаты сохранены. Вы можете перейти к следующему
                                 тесту. Или вы можете начать тест заново, нажав на кнопку Start выше</p>

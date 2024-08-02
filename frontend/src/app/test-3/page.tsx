@@ -158,8 +158,8 @@ const ThirdTest: React.FC = () => {
     const sendToBackend = async (gestureOrder: string[], images: string[]) => {
         setLoading(true); // Включаем лоадер
         const formData = new FormData();
-        const storedName = localStorage.getItem("name") || "";
-        formData.append('name', storedName);
+        const storedId = localStorage.getItem("id") || "";
+        formData.append('id', storedId);
         formData.append("test_number", "3");
         formData.append('gesture_names', gestureOrder.join(','));
 
@@ -267,7 +267,8 @@ const ThirdTest: React.FC = () => {
                     )}
                     {loading && (
                         <div className="text-4xl mt-6 text-gray-800">
-                            <p>Loading...</p>
+                            <p>Вы справились! Отправляем ваши результаты на сервер... И вы сможете перейти к следующему
+                                тесту. <br/>Загрузка... <br/>Обычно загрузка занимает не более 30 секунд.</p>
                         </div>
                     )}
                     {results && (
@@ -276,7 +277,7 @@ const ThirdTest: React.FC = () => {
                             <Link href="test-4"
                                   className={`px-4 py-2 mt-4 font-semibold rounded-lg shadow-md bg-[hsl(308_56%_85%)] text-[hsl(210_22%_22%)]`}
                             >
-                                Next
+                                Далее
                             </Link>
                             <p className="font-semibold mt-4">Результаты сохранены. Вы можете перейти к следующему
                                 тесту.
