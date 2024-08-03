@@ -153,7 +153,7 @@ const TestModal: FC<TestModalProps> = ({onClose}) => {
                         <button
                             type="button"
                             onClick={() => setShowMoca(true)}
-                            className="font-semibold text-white text-blue-500 rounded hover:text-blue-900"
+                            className="font-semibold text-blue-500 rounded hover:text-blue-900"
                         >
                             + Добавить балл MoCa теста
                         </button>
